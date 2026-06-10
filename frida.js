@@ -38,8 +38,35 @@ const modulePathConfig = {
     ['legacyAliases', 'legacyAliases.js']
   ]
 }
+const bootLogPath = '/data/frida/plugin.log'
+let bootLogFile = null
 
-const bootLogPath = '/tmp/frida_modular_boot.log'
+function bootNowText() {
+  try {
+    return new Date().toISOString()
+  } catch (error) {
+    return String(Date.now())
+  }
+}
+
+function bootLog(message) {
+  const line = `[${bootNowText()}] ${message}`
+  try {
+    if (!bootLogFile) bootLogFile = new File(bootLogPath, 'a+')
+    bootLogFile.write(line + '\n')
+    bootLogFile.flush()
+  } catch (e) {}
+}
+globalThis.bootLog = bootLog
+
+function closeBootLog() {
+  if (bootLogFile) {
+    try { bootLogFile.flush(); bootLogFile.close() } catch (e) {}
+    bootLogFile = null
+  }
+}
+globalThis.closeBootLog = closeBootLog
+
 const checkArgvAddress = ptr(0x829ea5a)
 
 const loadedModuleMap = {}
@@ -52,31 +79,6 @@ let pendingEarlyStart = false
 let pluginStartCalled = false
 let initStage = null
 let initParameters = null
-
-function bootNowText() {
-  try {
-    return new Date().toISOString()
-  } catch (error) {
-    return String(Date.now())
-  }
-}
-
-function bootLog(message) {
-  const line = '[' + bootNowText() + '] ' + message
-
-  try {
-    console.log('[FRIDA_BOOT] ' + message)
-  } catch (error) {
-  }
-
-  try {
-    const file = new File(bootLogPath, 'a+')
-    file.write(line + '\n')
-    file.flush()
-    file.close()
-  } catch (error) {
-  }
-}
 
 function resolveModulePath(fileName) {
   return modulePathConfig.baseDir + '/' + fileName

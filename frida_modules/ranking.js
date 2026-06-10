@@ -151,7 +151,7 @@ function updateRankingByUser(user) {
     ranklist[tempKey] = item
   }
   ranklist = rebuildTopRanking(getRankingArray(), 3)
-  pluginLogInfo(`排行榜已刷新: ${JSON.stringify(ranklist)}`)
+  bootLog(`[INFO] 排行榜已刷新: ${JSON.stringify(ranklist)}`)
 }
 
 // 向客户端下发战力榜站街数据。
@@ -205,7 +205,7 @@ function sendRankingList(user, all) {
 // 热载脚本时，从数据库恢复排行榜数据。
 function eventRankinfoLoadFromDb() {
   if (!isValidPointer(mySQLFrida)) {
-    pluginLogWarn('[ranking] skip load: mysql frida not initialized')
+    bootLog('[WARN] [ranking] skip load: mysql frida not initialized')
     return
   }
   const query = "select event_info from game_event where event_id = 'rankinfo';"
@@ -222,7 +222,7 @@ function eventRankinfoLoadFromDb() {
 function eventRankinfoSaveToDb() {
   pluginSafeCall('event_rankinfo_save_to_db', function () {
     if (!isValidPointer(mySQLFrida)) {
-      pluginLogWarn('[ranking] skip save: mysql frida not initialized')
+      bootLog('[WARN] [ranking] skip save: mysql frida not initialized')
       return
     }
     const info = sqlEscapeString(JSON.stringify(ranklist))

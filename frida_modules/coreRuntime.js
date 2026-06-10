@@ -1,57 +1,14 @@
 // ============================================================================
 // DNF Frida modern modular package - coreRuntime.js
-// Core runtime utilities: logging, safe calls, native export lookup, timestamps, files, and binary helpers.
+// Core runtime utilities: safe calls, native export lookup, timestamps, files, and binary helpers.
 // ============================================================================
-
-// 05. 日志与安全调用工具
-// ============================================================================
-const pluginLogPath = '/data/frida/plugin.log'
-let pluginLogFile = null
-
-function ensurePluginLogFile() {
-  if (pluginLogFile) return
-  try {
-    pluginLogFile = new File(pluginLogPath, 'a+')
-  } catch (e) {}
-}
-
-function pluginFileLog(level, message) {
-  try {
-    ensurePluginLogFile()
-    if (pluginLogFile) {
-      pluginLogFile.write(`[${getTimestamp()}] [${level}] ${message}\n`)
-      pluginLogFile.flush()
-    }
-  } catch (e) {}
-}
-
-function closePluginLog() {
-  if (pluginLogFile) {
-    try { pluginLogFile.flush(); pluginLogFile.close() } catch (e) {}
-    pluginLogFile = null
-  }
-}
-
-function pluginLogInfo(message) {
-  pluginFileLog('INFO', message)
-}
-function pluginLogWarn(message) {
-  pluginFileLog('WARN', message)
-}
-function pluginLogError(message, error) {
-  if (error) {
-    pluginFileLog('ERROR', `${message}: ${error}`)
-    return
-  }
-  pluginFileLog('ERROR', message)
-}
 
 // Hook 回调、模块安装、数据库操作都建议通过该函数保护，避免单个功能异常影响整体脚本。
 function pluginSafeCall(name, callback) {
   try {
     return callback()
   } catch (error) {
-    pluginLogError(name, error)
+    bootLog('[ERROR] ' + name + ': ' + error)
     return null
   }
 }
@@ -130,8 +87,7 @@ if (!globalThis.dnfPlugin) {
 }
 
 __dnfExport({
-  pluginLogInfo, pluginLogWarn, pluginLogError, pluginSafeCall, closePluginLog,
-  pluginNativeAbi, getSystemExportAddress, createSystemNativeFunction,
+  pluginSafeCall, pluginNativeAbi, getSystemExportAddress, createSystemNativeFunction,
   isNullPointer, isValidPointer, sqlEscapeString, getTimestamp, apiMkdir
 })
 __dnfMutable('lifecycleState', () => lifecycleState)

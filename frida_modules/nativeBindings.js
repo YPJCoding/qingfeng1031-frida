@@ -20,38 +20,7 @@ function apiCEnvironmentGetFileName() {
   return filename.readUtf8String(-1)
 }
 
-//文件记录日志
-const fridaLogDirPath = './frida_log/'
-let fLog = null
-let logDay = null
-function log(msg) {
-  const d = new Date()
-  const pad = n => String(n).padStart(2, '0')
-  const day = d.getDate().toString()
-  const timestamp = `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(day)} ${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}.${String(d.getMilliseconds())}`
-  if (fLog == null || logDay != day) {
-    closeLogFile()
-    apiMkdir(fridaLogDirPath)
-    fLog = new File(
-      `${fridaLogDirPath}frida_${apiCEnvironmentGetFileName()}_${d.getFullYear()}_${pad(d.getMonth() + 1)}_${pad(day)}.log`,
-      'a+'
-    )
-    logDay = day
-  }
-  console.log(`[${timestamp}]${msg}`)
-  fLog.write(`[${timestamp}]${msg}\n`)
-  fLog.flush()
-}
-function closeLogFile() {
-  if (fLog == null) {
-    return
-  }
-  try {
-    fLog.flush()
-    fLog.close()
-  } catch (error) {}
-  fLog = null
-}
+// ============================================================================
 
 //内存十六进制打印
 function bin2hex(p, len) {
@@ -393,7 +362,7 @@ if (!globalThis.dnfPlugin) {
 }
 
 __dnfExport({
-  gCEnvironment, cEnvironmentGetFileName, apiCEnvironmentGetFileName, fridaLogDirPath, log, closeLogFile, bin2hex,
+  gCEnvironment, cEnvironmentGetFileName, apiCEnvironmentGetFileName, bin2hex,
   cUserCharacInfoEnableSaveCharacStat, cUserGetState, cUserGetAccId, cUserCharacInfoGetCurCharacNo,
   cUserCharacInfoGetCharacLevel, cUserCharacInfoGetCurCharacName, cUserCharacInfoGetLevelUpExp,
   cUserCharacInfoGetCurCharacInvenW, cDungeonGetIndex, cInventoryGetInvenRef, invenItemIsEquipableItemType,
@@ -417,5 +386,4 @@ __dnfExport({
   interfacePacketBufPutInt, interfacePacketBufPutBinary, interfacePacketBufFinalize,
   destroyPacketGuardPacketGuard, fopen, fread, fclose
 })
-__dnfMutable('fLog', () => fLog, (v) => { fLog = v })
-__dnfMutable('logDay', () => logDay, (v) => { logDay = v })
+

@@ -9,17 +9,17 @@
 // 统一安装功能，避免在 start() 中堆叠大量业务代码。
 function installPluginFeature(name, enabled, installer) {
   if (!enabled) {
-    pluginLogWarn(`功能已关闭: ${name}`)
+    bootLog(`[WARN] 功能已关闭: ${name}`)
     return
   }
   if (pluginInstalledFeatureMap[name]) {
-    pluginLogWarn(`功能已安装，跳过重复安装: ${name}`)
+    bootLog(`[WARN] 功能已安装，跳过重复安装: ${name}`)
     return
   }
   pluginSafeCall(`安装功能失败: ${name}`, function () {
     installer()
     pluginInstalledFeatureMap[name] = true
-    pluginLogInfo(`功能已启用: ${name}`)
+    bootLog(`[INFO] 功能已启用: ${name}`)
   })
 }
 
@@ -64,11 +64,11 @@ let pluginStarted = false
 // 加载主功能。
 function start() {
   if (pluginStarted && !pluginRuntimeConfig.allowRepeatStart) {
-    pluginLogWarn('start() 已执行过，本次跳过，避免重复安装 Hook。')
+    bootLog('[WARN] start() 已执行过，本次跳过，避免重复安装 Hook。')
     return
   }
   pluginStarted = true
-  pluginLogInfo('++++++++++++++++++++ frida init start ++++++++++++++++++++')
+  bootLog('[INFO] ++++++++++++++++++++ frida init start ++++++++++++++++++++')
   try {
     const bootFile = new File('/tmp/frida_modular_boot.log', 'a+')
     bootFile.write('[MAIN_START] frida init start\n')
@@ -81,7 +81,7 @@ function start() {
   installCoreServices()
   lifecycleState.initialized = true
   lifecycleState.initializing = false
-  pluginLogInfo('++++++++++++++++++++ frida init done ++++++++++++++++++++')
+  bootLog('[INFO] ++++++++++++++++++++ frida init done ++++++++++++++++++++')
   try {
     const bootFile2 = new File('/tmp/frida_modular_boot.log', 'a+')
     bootFile2.write('[MAIN_START] frida init done\n')
@@ -94,7 +94,7 @@ function start() {
 // early 阶段加载时，等待 check_argv 执行结束，再安装业务 Hook 和基础服务。
 function awake() {
   if (globalThis.dnfPlugin?.entryEarlyHookInstalled) {
-    pluginLogWarn('awake skipped: entry early hook already installed')
+    bootLog('[WARN] awake skipped: entry early hook already installed')
     return
   }
   Interceptor.attach(pluginAddress.checkArgv, {
@@ -122,17 +122,17 @@ function init(stage, parameters) {
   } catch (error) {
     lifecycleState.failed = true
     lifecycleState.initializing = false
-    pluginLogError('frida init failed', error)
+    bootLog('[ERROR] frida init failed: ' + error)
   }
 }
 function dispose() {
-  pluginLogInfo('-------------------- frida dispose called -----------------')
+  bootLog('[INFO] -------------------- frida dispose called -----------------')
   if (lifecycleState.disposing) {
-    pluginLogWarn('dispose skipped: already disposing')
+    bootLog('[WARN] dispose skipped: already disposing')
     return 'dispose_skip_already_disposing'
   }
   if (!lifecycleState.initialized && !lifecycleState.failed) {
-    pluginLogWarn('dispose skipped: not initialized (early DP2 dispose, safe to ignore)')
+    bootLog('[WARN] dispose skipped: not initialized (early DP2 dispose, safe to ignore)')
     lifecycleState.disposed = true
     return 'dispose_skip_not_initialized'
   }
@@ -154,9 +154,9 @@ function dispose() {
     lifecycleState.disposing = false
     pluginStarted = false
     pluginInstalledFeatureMap = {}
-    closeLogFile()
-    closePluginLog()
-    pluginLogInfo('-------------------- frida dispose done -----------------')
+    closeBootLog()
+    closeBootLog()
+    bootLog('[INFO] -------------------- frida dispose done -----------------')
   }
 }
 export { init, start, awake, dispose } // ============================================================================
