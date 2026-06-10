@@ -42,7 +42,7 @@ const pluginFeatureSwitch = {
 
 const pluginRuntimeConfig = {
   // 本地配置文件路径。
-  configPath: 'frida_config.json',
+  configPath: '/data/frida/frida_config.json',
   // 是否跳过绝望之塔每 10 层的 UserAPC。
   skipTodUserApc: true,
   // 勇士归来判定天数。
