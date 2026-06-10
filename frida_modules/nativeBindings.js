@@ -355,6 +355,8 @@ const destroyPacketGuardPacketGuard = new NativeFunction(ptr(0x858de80), 'int', 
 const fopen = createSystemNativeFunction('fopen', 'pointer', ['pointer', 'pointer'])
 const fread = createSystemNativeFunction('fread', 'int', ['pointer', 'int', 'int', 'pointer'])
 const fclose = createSystemNativeFunction('fclose', 'int', ['pointer'])
+//爆率控制
+const cLuckPointGetItemRarity = new NativeFunction(ptr(0x8550BE4), 'int', ['pointer', 'pointer', 'int', 'int'], { abi: 'sysv' })
 // ============================================================================
 
 if (!globalThis.dnfPlugin) {
@@ -384,6 +386,6 @@ __dnfExport({
   packetBufGetShort, packetBufGetInt, packetBufGetBinary, packetGuardPacketGuard,
   interfacePacketBufPutHeader, interfacePacketBufPutByte, interfacePacketBufPutShort,
   interfacePacketBufPutInt, interfacePacketBufPutBinary, interfacePacketBufFinalize,
-  destroyPacketGuardPacketGuard, fopen, fread, fclose
+  destroyPacketGuardPacketGuard, fopen, fread, fclose, cLuckPointGetItemRarity
 })
 

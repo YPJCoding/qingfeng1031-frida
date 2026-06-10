@@ -31,6 +31,7 @@ const modulePathConfig = {
     ['towerOfDespair', 'towerOfDespair.js'],
     ['avatarEmblem', 'avatarEmblem.js'],
     ['ranking', 'ranking.js'],
+    ['dropRate', 'dropRate.js'],
     ['userWorld', 'userWorld.js'],
     ['returnUser', 'returnUser.js'],
     ['hiddenOption', 'hiddenOption.js'],

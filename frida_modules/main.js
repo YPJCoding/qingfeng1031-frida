@@ -50,6 +50,9 @@ function installCoreServices() {
   installPluginFeature('加载本地配置', pluginFeatureSwitch.loadConfig, function () {
     loadConfig(pluginRuntimeConfig.configPath)
   })
+  installPluginFeature('爆率控制', pluginFeatureSwitch.dropRate, function () {
+    installDropRate()
+  })
   installPluginFeature('初始化数据库', pluginFeatureSwitch.database, function () {
     apiScheduleOnMainThread(initDb, null)
   })

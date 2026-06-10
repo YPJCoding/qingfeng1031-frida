@@ -34,7 +34,9 @@ const pluginFeatureSwitch = {
   // 登录问候：玩家进入世界后发送一条提示消息。
   loginGreeting: true,
   // 在线奖励：原脚本默认关闭，这里继续默认关闭。
-  onlineReward: false
+  onlineReward: true,
+  // 爆率控制：修改装备掉落品级倍率。
+  dropRate: true
 }
 // ============================================================================
 // 02. 运行配置区
