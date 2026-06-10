@@ -7,8 +7,8 @@
 // ============================================================================
 
 //获取时装在数据库中的uid
-function apiGetAvartarUiId(avartar) {
-  return avartar.add(7).readInt()
+function apiGetAvatarUiId(avatar) {
+  return avatar.add(7).readInt()
 }
 
 //设置时装插槽数据(时装插槽数据指针, 插槽, 徽章id)
@@ -37,26 +37,26 @@ function installAvatarEmblemFix() {
         }
         //解析packet_buf
         //时装所在的背包槽
-        const avartarInvenSlot = apiPacketBufGetShort(packetBuf)
+        const avatarInvenSlot = apiPacketBufGetShort(packetBuf)
         //时装item_id
-        const avartarItemId = apiPacketBufGetInt(packetBuf)
+        const avatarItemId = apiPacketBufGetInt(packetBuf)
         //本次镶嵌徽章数量
         const emblemCnt = apiPacketBufGetByte(packetBuf)
         //获取时装道具
         const inven = cUserCharacInfoGetCurCharacInvenW(user)
-        const avartar = cInventoryGetInvenRef(inven, inventoryTypeAvartar, avartarInvenSlot)
+        const avatar = cInventoryGetInvenRef(inven, inventoryTypeAvatar, avatarInvenSlot)
         //校验时装 数据是否合法
         if (
-          invenItemIsEmpty(avartar) ||
-          invenItemGetKey(avartar) != avartarItemId ||
-          cUserCheckItemLock(user, 2, avartarInvenSlot)
+          invenItemIsEmpty(avatar) ||
+          invenItemGetKey(avatar) != avatarItemId ||
+          cUserCheckItemLock(user, 2, avatarInvenSlot)
         ) {
           return
         }
         //获取时装插槽数据
-        const avartarAddInfo = invenItemGetAddInfo(avartar)
-        const invenAvartarMgr = cInventoryGetAvatarItemMgrR(inven)
-        const jewelSocketData = wongWorkCAvatarItemMgrGetJewelSocketData(invenAvartarMgr, avartarAddInfo)
+        const avatarAddInfo = invenItemGetAddInfo(avatar)
+        const invenAvatarMgr = cInventoryGetAvatarItemMgrR(inven)
+        const jewelSocketData = wongWorkCAvatarItemMgrGetJewelSocketData(invenAvatarMgr, avatarAddInfo)
         if (jewelSocketData.isNull()) {
           return
         }
@@ -69,12 +69,12 @@ function installAvatarEmblemFix() {
             //徽章item_id
             const emblemItemId = apiPacketBufGetInt(packetBuf)
             //该徽章镶嵌的时装插槽id
-            const avartarSocketSlot = apiPacketBufGetByte(packetBuf)
-            //log('emblem_inven_slot=' + emblem_inven_slot + ', emblem_item_id=' + emblem_item_id + ', avartar_socket_slot=' + avartar_socket_slot)
+            const avatarSocketSlot = apiPacketBufGetByte(packetBuf)
+            //log('emblem_inven_slot=' + emblem_inven_slot + ', emblem_item_id=' + emblem_item_id + ', avatar_socket_slot=' + avatar_socket_slot)
             //获取徽章道具
             const emblem = cInventoryGetInvenRef(inven, inventoryTypeItem, emblemInvenSlot)
             //校验徽章及插槽数据是否合法
-            if (invenItemIsEmpty(emblem) || invenItemGetKey(emblem) != emblemItemId || avartarSocketSlot >= 3) {
+            if (invenItemIsEmpty(emblem) || invenItemGetKey(emblem) != emblemItemId || avatarSocketSlot >= 3) {
               return
             }
             //校验徽章是否满足时装插槽颜色要求
@@ -90,32 +90,32 @@ function installAvatarEmblemFix() {
             //获取徽章支持的插槽
             const emblemSocketType = cStackableItemGetJewelTargetSocket(citem)
             //获取要镶嵌的时装插槽类型
-            const avartarSocketType = jewelSocketData.add(avartarSocketSlot * 6).readShort()
-            if (!(emblemSocketType & avartarSocketType)) {
+            const avatarSocketType = jewelSocketData.add(avatarSocketSlot * 6).readShort()
+            if (!(emblemSocketType & avatarSocketType)) {
               //插槽类型不匹配
               //log('socket type not match!')
               return
             }
-            emblems[avartarSocketSlot] = [emblemInvenSlot, emblemItemId]
+            emblems[avatarSocketSlot] = [emblemInvenSlot, emblemItemId]
           }
           //开始镶嵌
-          for (const avartarSocketSlot in emblems) {
+          for (const avatarSocketSlot in emblems) {
             //删除徽章
-            const emblemInvenSlot = emblems[avartarSocketSlot][0]
+            const emblemInvenSlot = emblems[avatarSocketSlot][0]
             cInventoryDeleteItem(inven, 1, emblemInvenSlot, 1, 8, 1)
             //设置时装插槽数据
-            const emblemItemId = emblems[avartarSocketSlot][1]
-            apiSetJewelSocketData(jewelSocketData, avartarSocketSlot, emblemItemId)
-            //log('徽章item_id=' + emblem_item_id + '已成功镶嵌进avartar_socket_slot=' + avartar_socket_slot + '的槽内!')
+            const emblemItemId = emblems[avatarSocketSlot][1]
+            apiSetJewelSocketData(jewelSocketData, avatarSocketSlot, emblemItemId)
+            //log('徽章item_id=' + emblem_item_id + '已成功镶嵌进avatar_socket_slot=' + avatar_socket_slot + '的槽内!')
           }
           //时装插槽数据存档
           dbUpdateAvatarJewelSlotMakeRequest(
             cUserCharacInfoGetCurCharacNo(user),
-            apiGetAvartarUiId(avartar),
+            apiGetAvatarUiId(avatar),
             jewelSocketData
           )
           //通知客户端时装数据已更新
-          cUserSendUpdateItemList(user, 1, 1, avartarInvenSlot)
+          cUserSendUpdateItemList(user, 1, 1, avatarInvenSlot)
           //回包给客户端
           const packetGuard = apiPacketGuardPacketGuard()
           interfacePacketBufPutHeader(packetGuard, 1, 204)
@@ -142,4 +142,4 @@ if (!globalThis.dnfPlugin) {
   globalThis.dnfPlugin = {}
 }
 
-__dnfExport({ apiGetAvartarUiId, apiSetJewelSocketData, installAvatarEmblemFix })
+__dnfExport({ apiGetAvatarUiId, apiSetJewelSocketData, installAvatarEmblemFix })

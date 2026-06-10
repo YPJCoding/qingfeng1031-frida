@@ -119,7 +119,7 @@ const gTimerQueue = new NativeFunction(ptr(0x80f647c), 'pointer', [], {
 const timerDispatcherList = []
 const inventoryTypeBody = 0 //身上穿的装备
 const inventoryTypeItem = 1 //物品栏
-const inventoryTypeAvartar = 2 //时装栏
+const inventoryTypeAvatar = 2 //时装栏
 //已打开的数据库句柄
 let mySQLTaiwanCain = null
 let mySQLTaiwanCain2nd = null
@@ -140,7 +140,7 @@ __dnfExport({
   cUserCharacInfoGetCharacJob, cUserCharacInfoGetCurCharacGrowType,
   cUserCharacInfoGetCharacGuildkey, cUserGetGuildName, guardMutexGuard,
   destroyGuardMutexGuard, gTimerQueue, timerDispatcherList,
-  inventoryTypeBody, inventoryTypeItem, inventoryTypeAvartar
+  inventoryTypeBody, inventoryTypeItem, inventoryTypeAvatar
 })
 __dnfMutable('mySQLTaiwanCain', () => mySQLTaiwanCain, (v) => { mySQLTaiwanCain = v })
 __dnfMutable('mySQLTaiwanCain2nd', () => mySQLTaiwanCain2nd, (v) => { mySQLTaiwanCain2nd = v })
