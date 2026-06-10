@@ -70,7 +70,7 @@ function getSystemExportAddress(name) {
       return address
     }
   }
-  throw new Error('system export not found: ' + name)
+  throw new Error(`system export not found: ${name}`)
 }
 /** createSystemNativeFunction。
  * @param {unknown} name 参数。
@@ -107,16 +107,9 @@ function sqlEscapeString(value) {
 /** getTimestamp。
  * @returns {unknown} 返回值。*/
 function getTimestamp() {
-  let date = new Date()
-  date = new Date(date.setHours(date.getHours() + 0)) //转换到本地时间
-  const year = date.getFullYear().toString()
-  const month = (date.getMonth() + 1).toString()
-  const day = date.getDate().toString()
-  const hour = date.getHours().toString()
-  const minute = date.getMinutes().toString()
-  const second = date.getSeconds().toString()
-  const ms = date.getMilliseconds().toString()
-  return year + '-' + month + '-' + day + ' ' + hour + ':' + minute + ':' + second
+  const d = new Date()
+  const pad = n => String(n).padStart(2, '0')
+  return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())} ${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}`
 }
 
 //linux创建文件夹
@@ -138,70 +131,14 @@ function apiMkdir(path) {
 
 // ============================================================================
 
-// ============================================================================
-// 模块公共 API 注册区
-// ============================================================================
 if (!globalThis.dnfPlugin) {
   globalThis.dnfPlugin = {}
 }
 
-/**
- * Registers public symbols exported by coreRuntime.js.
- * Symbols are also attached to globalThis to preserve old script-style references
- * between modules loaded through Frida Script.load().
- * @returns {void}
- */
-function registerCurrentModuleSymbols() {
-  globalThis.pluginLogInfo = pluginLogInfo
-  globalThis.dnfPlugin.pluginLogInfo = pluginLogInfo
-  globalThis.pluginLogWarn = pluginLogWarn
-  globalThis.dnfPlugin.pluginLogWarn = pluginLogWarn
-  globalThis.pluginLogError = pluginLogError
-  globalThis.dnfPlugin.pluginLogError = pluginLogError
-  globalThis.pluginSafeCall = pluginSafeCall
-  globalThis.dnfPlugin.pluginSafeCall = pluginSafeCall
-  globalThis.pluginNativeAbi = pluginNativeAbi
-  globalThis.dnfPlugin.pluginNativeAbi = pluginNativeAbi
-  globalThis.getSystemExportAddress = getSystemExportAddress
-  globalThis.dnfPlugin.getSystemExportAddress = getSystemExportAddress
-  globalThis.createSystemNativeFunction = createSystemNativeFunction
-  globalThis.dnfPlugin.createSystemNativeFunction = createSystemNativeFunction
-  globalThis.isNullPointer = isNullPointer
-  globalThis.dnfPlugin.isNullPointer = isNullPointer
-  globalThis.sqlEscapeString = sqlEscapeString
-  globalThis.dnfPlugin.sqlEscapeString = sqlEscapeString
-  globalThis.getTimestamp = getTimestamp
-  globalThis.dnfPlugin.getTimestamp = getTimestamp
-  globalThis.isValidPointer = isValidPointer
-  globalThis.dnfPlugin.isValidPointer = isValidPointer
-  Object.defineProperty(globalThis, 'lifecycleState', {
-    get: function () { return lifecycleState },
-    configurable: true
-  })
-  Object.defineProperty(globalThis.dnfPlugin, 'lifecycleState', {
-    get: function () { return lifecycleState },
-    configurable: true
-  })
-  globalThis.apiMkdir = apiMkdir
-  globalThis.dnfPlugin.apiMkdir = apiMkdir
-  Object.defineProperty(globalThis, 'pluginInstalledFeatureMap', {
-    get: function () {
-      return pluginInstalledFeatureMap
-    },
-    set: function (value) {
-      pluginInstalledFeatureMap = value
-    },
-    configurable: true
-  })
-  Object.defineProperty(globalThis.dnfPlugin, 'pluginInstalledFeatureMap', {
-    get: function () {
-      return pluginInstalledFeatureMap
-    },
-    set: function (value) {
-      pluginInstalledFeatureMap = value
-    },
-    configurable: true
-  })
-}
-
-registerCurrentModuleSymbols()
+__dnfExport({
+  pluginLogInfo, pluginLogWarn, pluginLogError, pluginSafeCall,
+  pluginNativeAbi, getSystemExportAddress, createSystemNativeFunction,
+  isNullPointer, isValidPointer, sqlEscapeString, getTimestamp, apiMkdir
+})
+__dnfMutable('lifecycleState', () => lifecycleState)
+__dnfMutable('pluginInstalledFeatureMap', () => pluginInstalledFeatureMap, (v) => { pluginInstalledFeatureMap = v })

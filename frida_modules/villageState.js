@@ -117,92 +117,18 @@ const ReqDBSendNewSystemMail = new NativeFunction(
 )
 // ============================================================================
 
-// ============================================================================
-// 模块公共 API 注册区
-// ============================================================================
 if (!globalThis.dnfPlugin) {
   globalThis.dnfPlugin = {}
 }
 
-/**
- * Registers public symbols exported by villageState.js.
- * Symbols are also attached to globalThis to preserve old script-style references
- * between modules loaded through Frida Script.load().
- * @returns {void}
- */
-function registerCurrentModuleSymbols() {
-  globalThis.villageAttackStateP1 = villageAttackStateP1
-  globalThis.dnfPlugin.villageAttackStateP1 = villageAttackStateP1
-  globalThis.villageAttackStateP2 = villageAttackStateP2
-  globalThis.dnfPlugin.villageAttackStateP2 = villageAttackStateP2
-  globalThis.villageAttackStateP3 = villageAttackStateP3
-  globalThis.dnfPlugin.villageAttackStateP3 = villageAttackStateP3
-  globalThis.villageAttackStateEnd = villageAttackStateEnd
-  globalThis.dnfPlugin.villageAttackStateEnd = villageAttackStateEnd
-  globalThis.tauCaptainMonsterId = tauCaptainMonsterId
-  globalThis.dnfPlugin.tauCaptainMonsterId = tauCaptainMonsterId
-  globalThis.gblPopeMonsterId = gblPopeMonsterId
-  globalThis.dnfPlugin.gblPopeMonsterId = gblPopeMonsterId
-  globalThis.tauMetaCowMonsterId = tauMetaCowMonsterId
-  globalThis.dnfPlugin.tauMetaCowMonsterId = tauMetaCowMonsterId
-  globalThis.eventVillageAttackStartHour = eventVillageAttackStartHour
-  globalThis.dnfPlugin.eventVillageAttackStartHour = eventVillageAttackStartHour
-  globalThis.eventVillageAttackTargetScore = eventVillageAttackTargetScore
-  globalThis.dnfPlugin.eventVillageAttackTargetScore = eventVillageAttackTargetScore
-  globalThis.eventVillageAttackTotalTime = eventVillageAttackTotalTime
-  globalThis.dnfPlugin.eventVillageAttackTotalTime = eventVillageAttackTotalTime
-  globalThis.cUserGetParty = cUserGetParty
-  globalThis.dnfPlugin.cUserGetParty = cUserGetParty
-  globalThis.cPartyGetUser = cPartyGetUser
-  globalThis.dnfPlugin.cPartyGetUser = cPartyGetUser
-  globalThis.cUserGetCharacExpandData = cUserGetCharacExpandData
-  globalThis.dnfPlugin.cUserGetCharacExpandData = cUserGetCharacExpandData
-  globalThis.todLayerTodLayer = todLayerTodLayer
-  globalThis.dnfPlugin.todLayerTodLayer = todLayerTodLayer
-  globalThis.todUserStateSetEnterLayer = todUserStateSetEnterLayer
-  globalThis.dnfPlugin.todUserStateSetEnterLayer = todUserStateSetEnterLayer
-  globalThis.cInventoryGetMoney = cInventoryGetMoney
-  globalThis.dnfPlugin.cInventoryGetMoney = cInventoryGetMoney
-  globalThis.cUserSendNotiPacket = cUserSendNotiPacket
-  globalThis.dnfPlugin.cUserSendNotiPacket = cUserSendNotiPacket
-  globalThis.interVillageAttackedStartDispatchSig = interVillageAttackedStartDispatchSig
-  globalThis.dnfPlugin.interVillageAttackedStartDispatchSig = interVillageAttackedStartDispatchSig
-  globalThis.villageAttackedCVillageMonsterMgrOnDestroyVillageMonster = villageAttackedCVillageMonsterMgrOnDestroyVillageMonster
-  globalThis.dnfPlugin.villageAttackedCVillageMonsterMgrOnDestroyVillageMonster = villageAttackedCVillageMonsterMgrOnDestroyVillageMonster
-  globalThis.globalDataSVillageMonsterMgr = globalDataSVillageMonsterMgr
-  globalThis.dnfPlugin.globalDataSVillageMonsterMgr = globalDataSVillageMonsterMgr
-  globalThis.nullptr = nullptr
-  globalThis.dnfPlugin.nullptr = nullptr
-  globalThis.invenItem = invenItem
-  globalThis.dnfPlugin.invenItem = invenItem
-  globalThis.getItemIndex = getItemIndex
-  globalThis.dnfPlugin.getItemIndex = getItemIndex
-  globalThis.GetCurCharacNo = GetCurCharacNo
-  globalThis.dnfPlugin.GetCurCharacNo = GetCurCharacNo
-  globalThis.GetServerGroup = GetServerGroup
-  globalThis.dnfPlugin.GetServerGroup = GetServerGroup
-  globalThis.GetCurVAttackCount = GetCurVAttackCount
-  globalThis.dnfPlugin.GetCurVAttackCount = GetCurVAttackCount
-  globalThis.ReqDBSendNewSystemMail = ReqDBSendNewSystemMail
-  globalThis.dnfPlugin.ReqDBSendNewSystemMail = ReqDBSendNewSystemMail
-  Object.defineProperty(globalThis, 'villageAttackEventInfo', {
-    get: function () {
-      return villageAttackEventInfo
-    },
-    set: function (value) {
-      villageAttackEventInfo = value
-    },
-    configurable: true
-  })
-  Object.defineProperty(globalThis.dnfPlugin, 'villageAttackEventInfo', {
-    get: function () {
-      return villageAttackEventInfo
-    },
-    set: function (value) {
-      villageAttackEventInfo = value
-    },
-    configurable: true
-  })
-}
-
-registerCurrentModuleSymbols()
+__dnfExport({
+  villageAttackStateP1, villageAttackStateP2, villageAttackStateP3, villageAttackStateEnd,
+  tauCaptainMonsterId, gblPopeMonsterId, tauMetaCowMonsterId, eventVillageAttackStartHour,
+  eventVillageAttackTargetScore, eventVillageAttackTotalTime,
+  cUserGetParty, cPartyGetUser, cUserGetCharacExpandData, todLayerTodLayer,
+  todUserStateSetEnterLayer, cInventoryGetMoney, cUserSendNotiPacket,
+  interVillageAttackedStartDispatchSig, villageAttackedCVillageMonsterMgrOnDestroyVillageMonster,
+  globalDataSVillageMonsterMgr, nullptr, invenItem, getItemIndex, GetCurCharacNo,
+  GetServerGroup, GetCurVAttackCount, ReqDBSendNewSystemMail
+})
+__dnfMutable('villageAttackEventInfo', () => villageAttackEventInfo, (v) => { villageAttackEventInfo = v })

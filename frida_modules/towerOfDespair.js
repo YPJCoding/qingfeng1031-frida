@@ -68,22 +68,8 @@ function installTowerOfDespairFix(skipUserApc) {
 
 // ============================================================================
 
-// ============================================================================
-// 模块公共 API 注册区
-// ============================================================================
 if (!globalThis.dnfPlugin) {
   globalThis.dnfPlugin = {}
 }
 
-/**
- * Registers public symbols exported by towerOfDespair.js.
- * Symbols are also attached to globalThis to preserve old script-style references
- * between modules loaded through Frida Script.load().
- * @returns {void}
- */
-function registerCurrentModuleSymbols() {
-  globalThis.installTowerOfDespairFix = installTowerOfDespairFix
-  globalThis.dnfPlugin.installTowerOfDespairFix = installTowerOfDespairFix
-}
-
-registerCurrentModuleSymbols()
+__dnfExport({ installTowerOfDespairFix })

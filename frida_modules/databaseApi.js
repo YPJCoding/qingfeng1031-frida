@@ -127,168 +127,22 @@ let mySQLTaiwanBilling = null
 let mySQLFrida = null
 // ============================================================================
 
-// ============================================================================
-// 模块公共 API 注册区
-// ============================================================================
 if (!globalThis.dnfPlugin) {
   globalThis.dnfPlugin = {}
 }
 
-/**
- * Registers public symbols exported by databaseApi.js.
- * Symbols are also attached to globalThis to preserve old script-style references
- * between modules loaded through Frida Script.load().
- * @returns {void}
- */
-function registerCurrentModuleSymbols() {
-  globalThis.taiwanCain = taiwanCain
-  globalThis.dnfPlugin.taiwanCain = taiwanCain
-  globalThis.dBMgrGetDBHandle = dBMgrGetDBHandle
-  globalThis.dnfPlugin.dBMgrGetDBHandle = dBMgrGetDBHandle
-  globalThis.mySQLMySQL = mySQLMySQL
-  globalThis.dnfPlugin.mySQLMySQL = mySQLMySQL
-  globalThis.mySQLInit = mySQLInit
-  globalThis.dnfPlugin.mySQLInit = mySQLInit
-  globalThis.mySQLOpen = mySQLOpen
-  globalThis.dnfPlugin.mySQLOpen = mySQLOpen
-  globalThis.mySQLClose = mySQLClose
-  globalThis.dnfPlugin.mySQLClose = mySQLClose
-  globalThis.mySQLSetQuery2 = mySQLSetQuery2
-  globalThis.dnfPlugin.mySQLSetQuery2 = mySQLSetQuery2
-  globalThis.mySQLSetQuery3 = mySQLSetQuery3
-  globalThis.dnfPlugin.mySQLSetQuery3 = mySQLSetQuery3
-  globalThis.mySQLSetQuery4 = mySQLSetQuery4
-  globalThis.dnfPlugin.mySQLSetQuery4 = mySQLSetQuery4
-  globalThis.mySQLSetQuery5 = mySQLSetQuery5
-  globalThis.dnfPlugin.mySQLSetQuery5 = mySQLSetQuery5
-  globalThis.mySQLSetQuery6 = mySQLSetQuery6
-  globalThis.dnfPlugin.mySQLSetQuery6 = mySQLSetQuery6
-  globalThis.mySQLExec = mySQLExec
-  globalThis.dnfPlugin.mySQLExec = mySQLExec
-  globalThis.mySQLExecQuery = mySQLExecQuery
-  globalThis.dnfPlugin.mySQLExecQuery = mySQLExecQuery
-  globalThis.mySQLGetNRows = mySQLGetNRows
-  globalThis.dnfPlugin.mySQLGetNRows = mySQLGetNRows
-  globalThis.mySQLFetch = mySQLFetch
-  globalThis.dnfPlugin.mySQLFetch = mySQLFetch
-  globalThis.mySQLGetInt = mySQLGetInt
-  globalThis.dnfPlugin.mySQLGetInt = mySQLGetInt
-  globalThis.mySQLGetShort = mySQLGetShort
-  globalThis.dnfPlugin.mySQLGetShort = mySQLGetShort
-  globalThis.mySQLGetUint = mySQLGetUint
-  globalThis.dnfPlugin.mySQLGetUint = mySQLGetUint
-  globalThis.mySQLGetUlonglong = mySQLGetUlonglong
-  globalThis.dnfPlugin.mySQLGetUlonglong = mySQLGetUlonglong
-  globalThis.mySQLGetUshort = mySQLGetUshort
-  globalThis.dnfPlugin.mySQLGetUshort = mySQLGetUshort
-  globalThis.mySQLGetFloat = mySQLGetFloat
-  globalThis.dnfPlugin.mySQLGetFloat = mySQLGetFloat
-  globalThis.mySQLGetBinary = mySQLGetBinary
-  globalThis.dnfPlugin.mySQLGetBinary = mySQLGetBinary
-  globalThis.mySQLGetBinaryLength = mySQLGetBinaryLength
-  globalThis.dnfPlugin.mySQLGetBinaryLength = mySQLGetBinaryLength
-  globalThis.mySQLGetStr = mySQLGetStr
-  globalThis.dnfPlugin.mySQLGetStr = mySQLGetStr
-  globalThis.mySQLBlobToStr = mySQLBlobToStr
-  globalThis.dnfPlugin.mySQLBlobToStr = mySQLBlobToStr
-  globalThis.compressZip = compressZip
-  globalThis.dnfPlugin.compressZip = compressZip
-  globalThis.uncompressZip = uncompressZip
-  globalThis.dnfPlugin.uncompressZip = uncompressZip
-  globalThis.cUserCharacInfoGetCharacJob = cUserCharacInfoGetCharacJob
-  globalThis.dnfPlugin.cUserCharacInfoGetCharacJob = cUserCharacInfoGetCharacJob
-  globalThis.cUserCharacInfoGetCurCharacGrowType = cUserCharacInfoGetCurCharacGrowType
-  globalThis.dnfPlugin.cUserCharacInfoGetCurCharacGrowType = cUserCharacInfoGetCurCharacGrowType
-  globalThis.cUserCharacInfoGetCharacGuildkey = cUserCharacInfoGetCharacGuildkey
-  globalThis.dnfPlugin.cUserCharacInfoGetCharacGuildkey = cUserCharacInfoGetCharacGuildkey
-  globalThis.cUserGetGuildName = cUserGetGuildName
-  globalThis.dnfPlugin.cUserGetGuildName = cUserGetGuildName
-  globalThis.guardMutexGuard = guardMutexGuard
-  globalThis.dnfPlugin.guardMutexGuard = guardMutexGuard
-  globalThis.destroyGuardMutexGuard = destroyGuardMutexGuard
-  globalThis.dnfPlugin.destroyGuardMutexGuard = destroyGuardMutexGuard
-  globalThis.gTimerQueue = gTimerQueue
-  globalThis.dnfPlugin.gTimerQueue = gTimerQueue
-  globalThis.timerDispatcherList = timerDispatcherList
-  globalThis.dnfPlugin.timerDispatcherList = timerDispatcherList
-  globalThis.inventoryTypeBody = inventoryTypeBody
-  globalThis.dnfPlugin.inventoryTypeBody = inventoryTypeBody
-  globalThis.inventoryTypeItem = inventoryTypeItem
-  globalThis.dnfPlugin.inventoryTypeItem = inventoryTypeItem
-  globalThis.inventoryTypeAvartar = inventoryTypeAvartar
-  globalThis.dnfPlugin.inventoryTypeAvartar = inventoryTypeAvartar
-  Object.defineProperty(globalThis, 'mySQLTaiwanCain', {
-    get: function () {
-      return mySQLTaiwanCain
-    },
-    set: function (value) {
-      mySQLTaiwanCain = value
-    },
-    configurable: true
-  })
-  Object.defineProperty(globalThis.dnfPlugin, 'mySQLTaiwanCain', {
-    get: function () {
-      return mySQLTaiwanCain
-    },
-    set: function (value) {
-      mySQLTaiwanCain = value
-    },
-    configurable: true
-  })
-  Object.defineProperty(globalThis, 'mySQLTaiwanCain2nd', {
-    get: function () {
-      return mySQLTaiwanCain2nd
-    },
-    set: function (value) {
-      mySQLTaiwanCain2nd = value
-    },
-    configurable: true
-  })
-  Object.defineProperty(globalThis.dnfPlugin, 'mySQLTaiwanCain2nd', {
-    get: function () {
-      return mySQLTaiwanCain2nd
-    },
-    set: function (value) {
-      mySQLTaiwanCain2nd = value
-    },
-    configurable: true
-  })
-  Object.defineProperty(globalThis, 'mySQLTaiwanBilling', {
-    get: function () {
-      return mySQLTaiwanBilling
-    },
-    set: function (value) {
-      mySQLTaiwanBilling = value
-    },
-    configurable: true
-  })
-  Object.defineProperty(globalThis.dnfPlugin, 'mySQLTaiwanBilling', {
-    get: function () {
-      return mySQLTaiwanBilling
-    },
-    set: function (value) {
-      mySQLTaiwanBilling = value
-    },
-    configurable: true
-  })
-  Object.defineProperty(globalThis, 'mySQLFrida', {
-    get: function () {
-      return mySQLFrida
-    },
-    set: function (value) {
-      mySQLFrida = value
-    },
-    configurable: true
-  })
-  Object.defineProperty(globalThis.dnfPlugin, 'mySQLFrida', {
-    get: function () {
-      return mySQLFrida
-    },
-    set: function (value) {
-      mySQLFrida = value
-    },
-    configurable: true
-  })
-}
-
-registerCurrentModuleSymbols()
+__dnfExport({
+  taiwanCain, dBMgrGetDBHandle, mySQLMySQL, mySQLInit, mySQLOpen, mySQLClose,
+  mySQLSetQuery2, mySQLSetQuery3, mySQLSetQuery4, mySQLSetQuery5, mySQLSetQuery6,
+  mySQLExec, mySQLExecQuery, mySQLGetNRows, mySQLFetch, mySQLGetInt, mySQLGetShort,
+  mySQLGetUint, mySQLGetUlonglong, mySQLGetUshort, mySQLGetFloat, mySQLGetBinary,
+  mySQLGetBinaryLength, mySQLGetStr, mySQLBlobToStr, compressZip, uncompressZip,
+  cUserCharacInfoGetCharacJob, cUserCharacInfoGetCurCharacGrowType,
+  cUserCharacInfoGetCharacGuildkey, cUserGetGuildName, guardMutexGuard,
+  destroyGuardMutexGuard, gTimerQueue, timerDispatcherList,
+  inventoryTypeBody, inventoryTypeItem, inventoryTypeAvartar
+})
+__dnfMutable('mySQLTaiwanCain', () => mySQLTaiwanCain, (v) => { mySQLTaiwanCain = v })
+__dnfMutable('mySQLTaiwanCain2nd', () => mySQLTaiwanCain2nd, (v) => { mySQLTaiwanCain2nd = v })
+__dnfMutable('mySQLTaiwanBilling', () => mySQLTaiwanBilling, (v) => { mySQLTaiwanBilling = v })
+__dnfMutable('mySQLFrida', () => mySQLFrida, (v) => { mySQLFrida = v })

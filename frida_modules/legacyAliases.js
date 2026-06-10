@@ -32,19 +32,4 @@ if (!globalThis.dnfPlugin) {
   globalThis.dnfPlugin = {}
 }
 
-/**
- * Registers public symbols exported by legacyAliases.js.
- * Symbols are also attached to globalThis to preserve old script-style references
- * between modules loaded through Frida Script.load().
- * @returns {void}
- */
-function registerCurrentModuleSymbols() {
-  globalThis.fixTod = fixTod
-  globalThis.dnfPlugin.fixTod = fixTod
-  globalThis.fixUseEmblem = fixUseEmblem
-  globalThis.dnfPlugin.fixUseEmblem = fixUseEmblem
-  globalThis.getRandomInt2 = getRandomInt2
-  globalThis.dnfPlugin.getRandomInt2 = getRandomInt2
-}
-
-registerCurrentModuleSymbols()
+__dnfExport({ fixTod, fixUseEmblem, getRandomInt2 })

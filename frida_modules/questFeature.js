@@ -63,24 +63,8 @@ function clearDoingQuestEx(user, questId) {
 
 // ============================================================================
 
-// ============================================================================
-// 模块公共 API 注册区
-// ============================================================================
 if (!globalThis.dnfPlugin) {
   globalThis.dnfPlugin = {}
 }
 
-/**
- * Registers public symbols exported by questFeature.js.
- * Symbols are also attached to globalThis to preserve old script-style references
- * between modules loaded through Frida Script.load().
- * @returns {void}
- */
-function registerCurrentModuleSymbols() {
-  globalThis.apiForceClearQuest = apiForceClearQuest
-  globalThis.dnfPlugin.apiForceClearQuest = apiForceClearQuest
-  globalThis.clearDoingQuestEx = clearDoingQuestEx
-  globalThis.dnfPlugin.clearDoingQuestEx = clearDoingQuestEx
-}
-
-registerCurrentModuleSymbols()
+__dnfExport({ apiForceClearQuest, clearDoingQuestEx })

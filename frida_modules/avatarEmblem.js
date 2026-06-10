@@ -148,26 +148,8 @@ function installAvatarEmblemFix() {
 
 // ============================================================================
 
-// ============================================================================
-// 模块公共 API 注册区
-// ============================================================================
 if (!globalThis.dnfPlugin) {
   globalThis.dnfPlugin = {}
 }
 
-/**
- * Registers public symbols exported by avatarEmblem.js.
- * Symbols are also attached to globalThis to preserve old script-style references
- * between modules loaded through Frida Script.load().
- * @returns {void}
- */
-function registerCurrentModuleSymbols() {
-  globalThis.apiGetAvartarUiId = apiGetAvartarUiId
-  globalThis.dnfPlugin.apiGetAvartarUiId = apiGetAvartarUiId
-  globalThis.apiSetJewelSocketData = apiSetJewelSocketData
-  globalThis.dnfPlugin.apiSetJewelSocketData = apiSetJewelSocketData
-  globalThis.installAvatarEmblemFix = installAvatarEmblemFix
-  globalThis.dnfPlugin.installAvatarEmblemFix = installAvatarEmblemFix
-}
-
-registerCurrentModuleSymbols()
+__dnfExport({ apiGetAvartarUiId, apiSetJewelSocketData, installAvatarEmblemFix })

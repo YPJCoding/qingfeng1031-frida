@@ -3,6 +3,21 @@
 // Early checkArgv hook installed before async module loading to avoid race.
 // ============================================================================
 
+globalThis.__dnfExport = function (exportsObj) {
+  const ns = globalThis.dnfPlugin
+  for (const [k, v] of Object.entries(exportsObj)) {
+    globalThis[k] = v
+    ns[k] = v
+  }
+}
+globalThis.__dnfMutable = function (name, getter, setter) {
+  const desc = { get: getter, configurable: true }
+  if (setter) desc.set = setter
+  Object.defineProperty(globalThis, name, desc)
+  const ns = globalThis.dnfPlugin || {}
+  Object.defineProperty(ns, name, desc)
+}
+
 const modulePathConfig = {
   baseDir: '/data/frida/frida_modules',
   modules: [
@@ -125,7 +140,7 @@ function startMainModule(reason) {
     return 'start_skip_already_called'
   }
 
-  if (!mainModule || typeof mainModule.start !== 'function') {
+  if (typeof mainModule?.start !== 'function') {
     bootLog('start skipped: mainModule.start not ready, reason=' + reason)
     pendingEarlyStart = true
     return 'start_pending_module_not_ready'
@@ -134,8 +149,8 @@ function startMainModule(reason) {
   pluginStartCalled = true
   pendingEarlyStart = false
 
-  bootLog('mainModule keys=' + JSON.stringify(Object.keys(mainModule || {})))
-  bootLog('mainModule.start typeof=' + typeof (mainModule && mainModule.start))
+  bootLog(`mainModule keys=${JSON.stringify(Object.keys(mainModule || {}))}`)
+  bootLog(`mainModule.start typeof=${typeof mainModule?.start}`)
   bootLog('calling mainModule.start, reason=' + reason)
 
   try {

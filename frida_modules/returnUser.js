@@ -27,24 +27,8 @@ function setReturnUser(day) {
 
 // ============================================================================
 
-// ============================================================================
-// 模块公共 API 注册区
-// ============================================================================
 if (!globalThis.dnfPlugin) {
   globalThis.dnfPlugin = {}
 }
 
-/**
- * Registers public symbols exported by returnUser.js.
- * Symbols are also attached to globalThis to preserve old script-style references
- * between modules loaded through Frida Script.load().
- * @returns {void}
- */
-function registerCurrentModuleSymbols() {
-  globalThis.setReturnUserDays = setReturnUserDays
-  globalThis.dnfPlugin.setReturnUserDays = setReturnUserDays
-  globalThis.setReturnUser = setReturnUser
-  globalThis.dnfPlugin.setReturnUser = setReturnUser
-}
-
-registerCurrentModuleSymbols()
+__dnfExport({ setReturnUserDays, setReturnUser })

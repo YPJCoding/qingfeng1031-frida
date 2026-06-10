@@ -14,17 +14,17 @@
  * @returns {unknown} 返回值。*/
 function installPluginFeature(name, enabled, installer) {
   if (!enabled) {
-    pluginLogWarn('功能已关闭: ' + name)
+    pluginLogWarn(`功能已关闭: ${name}`)
     return
   }
   if (pluginInstalledFeatureMap[name]) {
-    pluginLogWarn('功能已安装，跳过重复安装: ' + name)
+    pluginLogWarn(`功能已安装，跳过重复安装: ${name}`)
     return
   }
-  pluginSafeCall('安装功能失败: ' + name, function () {
+  pluginSafeCall(`安装功能失败: ${name}`, function () {
     installer()
     pluginInstalledFeatureMap[name] = true
-    pluginLogInfo('功能已启用: ' + name)
+    pluginLogInfo(`功能已启用: ${name}`)
   })
 }
 
@@ -81,7 +81,7 @@ function start() {
   pluginStarted = true
   pluginLogInfo('++++++++++++++++++++ frida init start ++++++++++++++++++++')
   try {
-    var bootFile = new File('/tmp/frida_modular_boot.log', 'a+')
+    const bootFile = new File('/tmp/frida_modular_boot.log', 'a+')
     bootFile.write('[MAIN_START] frida init start\n')
     bootFile.flush()
     bootFile.close()
@@ -94,7 +94,7 @@ function start() {
   lifecycleState.initializing = false
   pluginLogInfo('++++++++++++++++++++ frida init done ++++++++++++++++++++')
   try {
-    var bootFile2 = new File('/tmp/frida_modular_boot.log', 'a+')
+    const bootFile2 = new File('/tmp/frida_modular_boot.log', 'a+')
     bootFile2.write('[MAIN_START] frida init done\n')
     bootFile2.flush()
     bootFile2.close()
@@ -106,7 +106,7 @@ function start() {
 /** awake。
  * @returns {unknown} 返回值。*/
 function awake() {
-  if (typeof globalThis.dnfPlugin !== 'undefined' && globalThis.dnfPlugin.entryEarlyHookInstalled) {
+  if (globalThis.dnfPlugin?.entryEarlyHookInstalled) {
     pluginLogWarn('awake skipped: entry early hook already installed')
     return
   }
@@ -179,52 +179,12 @@ function dispose() {
 }
 export { init, start, awake, dispose } // ============================================================================
 
-// ============================================================================
-// 模块公共 API 注册区
-// ============================================================================
 if (!globalThis.dnfPlugin) {
   globalThis.dnfPlugin = {}
 }
 
-/**
- * Registers public symbols exported by main.js.
- * Symbols are also attached to globalThis to preserve old script-style references
- * between modules loaded through Frida Script.load().
- * @returns {void}
- */
-function registerCurrentModuleSymbols() {
-  globalThis.installPluginFeature = installPluginFeature
-  globalThis.dnfPlugin.installPluginFeature = installPluginFeature
-  globalThis.installBusinessFeatures = installBusinessFeatures
-  globalThis.dnfPlugin.installBusinessFeatures = installBusinessFeatures
-  globalThis.installCoreServices = installCoreServices
-  globalThis.dnfPlugin.installCoreServices = installCoreServices
-  globalThis.start = start
-  globalThis.dnfPlugin.start = start
-  globalThis.awake = awake
-  globalThis.dnfPlugin.awake = awake
-  globalThis.init = init
-  globalThis.dnfPlugin.init = init
-  globalThis.dispose = dispose
-  globalThis.dnfPlugin.dispose = dispose
-  Object.defineProperty(globalThis, 'pluginStarted', {
-    get: function () {
-      return pluginStarted
-    },
-    set: function (value) {
-      pluginStarted = value
-    },
-    configurable: true
-  })
-  Object.defineProperty(globalThis.dnfPlugin, 'pluginStarted', {
-    get: function () {
-      return pluginStarted
-    },
-    set: function (value) {
-      pluginStarted = value
-    },
-    configurable: true
-  })
-}
-
-registerCurrentModuleSymbols()
+__dnfExport({
+  installPluginFeature, installBusinessFeatures, installCoreServices,
+  start, awake, init, dispose
+})
+__dnfMutable('pluginStarted', () => pluginStarted, (v) => { pluginStarted = v })

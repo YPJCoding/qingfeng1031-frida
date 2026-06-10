@@ -51,7 +51,7 @@ let ranklist = {
  * @returns {unknown} 返回值。*/
 function getRankScore(characNo) {
   let score = 0
-  const query = "SELECT ZLZ FROM frida.battle WHERE CID='" + characNo + "';"
+  const query = `SELECT ZLZ FROM frida.battle WHERE CID='${characNo}';`
   if (apiMySQLExec(mySQLTaiwanCain, query)) {
     if (mySQLGetNRows(mySQLTaiwanCain) == 1) {
       mySQLFetch(mySQLTaiwanCain)
@@ -117,9 +117,7 @@ function buildRankingItemFromUser(user) {
   item.Guilkey = cUserCharacInfoGetCharacGuildkey(user)
   item.Guilname = apiCUserGetGuildName(user)
   item.equip = collectRankingEquipments(user)
-  if (!item.Guilname) {
-    item.Guilname = '未加入公会'
-  }
+  item.Guilname ??= '未加入公会'
   return item
 }
 
@@ -128,27 +126,15 @@ function buildRankingItemFromUser(user) {
  * @param {unknown} characName 参数。
  * @returns {unknown} 返回值。*/
 function findRankingKeyByCharacName(characName) {
-  let key = null
-  for (key in ranklist) {
-    if (ranklist.hasOwnProperty(key) && ranklist[key].characname === characName) {
-      return key
-    }
-  }
-  return null
+  const entry = Object.entries(ranklist).find(([, v]) => v.characname === characName)
+  return entry ? entry[0] : null
 }
 
 // 将排行榜对象转为数组，方便排序。
 /** getRankingArray。
  * @returns {unknown} 返回值。*/
 function getRankingArray() {
-  const result = []
-  let key = null
-  for (key in ranklist) {
-    if (ranklist.hasOwnProperty(key)) {
-      result.push(ranklist[key])
-    }
-  }
-  return result
+  return Object.values(ranklist)
 }
 
 // 根据战力分从高到低重建排行榜，只保留前三名。
@@ -188,7 +174,7 @@ function updateRankingByUser(user) {
     ranklist[tempKey] = item
   }
   ranklist = rebuildTopRanking(getRankingArray(), 3)
-  pluginLogInfo('排行榜已刷新: ' + JSON.stringify(ranklist))
+  pluginLogInfo(`排行榜已刷新: ${JSON.stringify(ranklist)}`)
 }
 
 // 向客户端下发战力榜站街数据。
@@ -215,24 +201,21 @@ function sendRankingList(user, all) {
   try {
     interfacePacketBufPutHeader(packetGuard, pluginPacket.rankingList.category, pluginPacket.rankingList.header)
     interfacePacketBufPutByte(packetGuard, Object.keys(ranklist).length)
-    for (key in ranklist) {
-      if (ranklist.hasOwnProperty(key)) {
-        const rankingItem = ranklist[key]
-        const equipment = rankingItem.equip
-        let slot = 0
-        apiInterfacePacketBufPutString(packetGuard, rankingItem.characname)
-        interfacePacketBufPutByte(packetGuard, rankingItem.lev)
-        interfacePacketBufPutByte(packetGuard, rankingItem.job)
-        interfacePacketBufPutByte(packetGuard, rankingItem.Grow)
-        apiInterfacePacketBufPutString(packetGuard, rankingItem.Guilname)
-        interfacePacketBufPutInt(packetGuard, rankingItem.Guilkey)
-        for (slot = 0; slot < equipment.length; slot++) {
-          if (slot == 9) {
-            interfacePacketBufPutInt(packetGuard, -1)
-            continue
-          }
-          interfacePacketBufPutInt(packetGuard, equipment[slot])
+    for (const rankingItem of Object.values(ranklist)) {
+      const equipment = rankingItem.equip
+      let slot = 0
+      apiInterfacePacketBufPutString(packetGuard, rankingItem.characname)
+      interfacePacketBufPutByte(packetGuard, rankingItem.lev)
+      interfacePacketBufPutByte(packetGuard, rankingItem.job)
+      interfacePacketBufPutByte(packetGuard, rankingItem.Grow)
+      apiInterfacePacketBufPutString(packetGuard, rankingItem.Guilname)
+      interfacePacketBufPutInt(packetGuard, rankingItem.Guilkey)
+      for (slot = 0; slot < equipment.length; slot++) {
+        if (slot == 9) {
+          interfacePacketBufPutInt(packetGuard, -1)
+          continue
         }
+        interfacePacketBufPutInt(packetGuard, equipment[slot])
       }
     }
     interfacePacketBufFinalize(packetGuard, 1)
@@ -276,7 +259,7 @@ function eventRankinfoSaveToDb() {
       return
     }
     const info = sqlEscapeString(JSON.stringify(ranklist))
-    apiMySQLExec(mySQLFrida, "replace into game_event (event_id, event_info) values ('rankinfo', '" + info + "');")
+    apiMySQLExec(mySQLFrida, `replace into game_event (event_id, event_info) values ('rankinfo', '${info}');`)
   })
 }
 
@@ -309,88 +292,16 @@ function SendRankLits(user, all) {
 
 // ============================================================================
 
-// ============================================================================
-// 模块公共 API 注册区
-// ============================================================================
 if (!globalThis.dnfPlugin) {
   globalThis.dnfPlugin = {}
 }
 
-/**
- * Registers public symbols exported by ranking.js.
- * Symbols are also attached to globalThis to preserve old script-style references
- * between modules loaded through Frida Script.load().
- * @returns {void}
- */
-function registerCurrentModuleSymbols() {
-  globalThis.getRankScore = getRankScore
-  globalThis.dnfPlugin.getRankScore = getRankScore
-  globalThis.createEmptyRankingItem = createEmptyRankingItem
-  globalThis.dnfPlugin.createEmptyRankingItem = createEmptyRankingItem
-  globalThis.collectRankingEquipments = collectRankingEquipments
-  globalThis.dnfPlugin.collectRankingEquipments = collectRankingEquipments
-  globalThis.buildRankingItemFromUser = buildRankingItemFromUser
-  globalThis.dnfPlugin.buildRankingItemFromUser = buildRankingItemFromUser
-  globalThis.findRankingKeyByCharacName = findRankingKeyByCharacName
-  globalThis.dnfPlugin.findRankingKeyByCharacName = findRankingKeyByCharacName
-  globalThis.getRankingArray = getRankingArray
-  globalThis.dnfPlugin.getRankingArray = getRankingArray
-  globalThis.rebuildTopRanking = rebuildTopRanking
-  globalThis.dnfPlugin.rebuildTopRanking = rebuildTopRanking
-  globalThis.updateRankingByUser = updateRankingByUser
-  globalThis.dnfPlugin.updateRankingByUser = updateRankingByUser
-  globalThis.canBroadcastRanking = canBroadcastRanking
-  globalThis.dnfPlugin.canBroadcastRanking = canBroadcastRanking
-  globalThis.sendRankingList = sendRankingList
-  globalThis.dnfPlugin.sendRankingList = sendRankingList
-  globalThis.eventRankinfoLoadFromDb = eventRankinfoLoadFromDb
-  globalThis.dnfPlugin.eventRankinfoLoadFromDb = eventRankinfoLoadFromDb
-  globalThis.eventRankinfoSaveToDb = eventRankinfoSaveToDb
-  globalThis.dnfPlugin.eventRankinfoSaveToDb = eventRankinfoSaveToDb
-  globalThis.GetRankNumber = GetRankNumber
-  globalThis.dnfPlugin.GetRankNumber = GetRankNumber
-  globalThis.GetMyEquInfo = GetMyEquInfo
-  globalThis.dnfPlugin.GetMyEquInfo = GetMyEquInfo
-  globalThis.SetRanking = SetRanking
-  globalThis.dnfPlugin.SetRanking = SetRanking
-  globalThis.SendRankLits = SendRankLits
-  globalThis.dnfPlugin.SendRankLits = SendRankLits
-  Object.defineProperty(globalThis, 'ranklist', {
-    get: function () {
-      return ranklist
-    },
-    set: function (value) {
-      ranklist = value
-    },
-    configurable: true
-  })
-  Object.defineProperty(globalThis.dnfPlugin, 'ranklist', {
-    get: function () {
-      return ranklist
-    },
-    set: function (value) {
-      ranklist = value
-    },
-    configurable: true
-  })
-  Object.defineProperty(globalThis, 'rankingBroadcastLastAt', {
-    get: function () {
-      return rankingBroadcastLastAt
-    },
-    set: function (value) {
-      rankingBroadcastLastAt = value
-    },
-    configurable: true
-  })
-  Object.defineProperty(globalThis.dnfPlugin, 'rankingBroadcastLastAt', {
-    get: function () {
-      return rankingBroadcastLastAt
-    },
-    set: function (value) {
-      rankingBroadcastLastAt = value
-    },
-    configurable: true
-  })
-}
-
-registerCurrentModuleSymbols()
+__dnfExport({
+  getRankScore, createEmptyRankingItem, collectRankingEquipments,
+  buildRankingItemFromUser, findRankingKeyByCharacName, getRankingArray,
+  rebuildTopRanking, updateRankingByUser, canBroadcastRanking, sendRankingList,
+  eventRankinfoLoadFromDb, eventRankinfoSaveToDb,
+  GetRankNumber, GetMyEquInfo, SetRanking, SendRankLits
+})
+__dnfMutable('ranklist', () => ranklist, (v) => { ranklist = v })
+__dnfMutable('rankingBroadcastLastAt', () => rankingBroadcastLastAt, (v) => { rankingBroadcastLastAt = v })

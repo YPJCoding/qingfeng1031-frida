@@ -12,9 +12,7 @@
 function eventVillageAttackSaveToDb() {
   apiMySQLExec(
     mySQLFrida,
-    "replace into game_event (event_id, event_info) values ('villageattack', '" +
-      JSON.stringify(villageAttackEventInfo) +
-      "');"
+      `replace into game_event (event_id, event_info) values ('villageattack', '${JSON.stringify(villageAttackEventInfo)}');`
   )
 }
 
@@ -47,10 +45,7 @@ function doTimerDispatch() {
   }
   destroyGuardMutexGuard(guard)
   //执行任务
-  for (let i = 0; i < taskList.length; ++i) {
-    const task = taskList[i]
-    const f = task[0]
-    const args = task[1]
+  for (const [f, args] of taskList) {
     f.apply(null, args)
   }
 }
@@ -234,10 +229,7 @@ function setVillageAttackDungeonDifficult(difficult) {
 function eventVillageAttackBroadcastDiffcult() {
   if (villageAttackEventInfo.state != villageAttackStateEnd) {
     apiGameWorldSendNotiPacketMessage(
-      '<怪物攻城活动> 当前阶段:' +
-        (villageAttackEventInfo.state + 1) +
-        ', 当前难度等级: ' +
-        villageAttackEventInfo.difficult,
+      `<怪物攻城活动> 当前阶段:${villageAttackEventInfo.state + 1}, 当前难度等级: ${villageAttackEventInfo.difficult}`,
       14
     )
   }
@@ -416,7 +408,7 @@ function hookVillageAttack() {
             villageAttackEventInfo.nextVillageMonsterId = tauMetaCowMonsterId
             //世界广播
             apiGameWorldSendNotiPacketMessage(
-              '<怪物攻城活动> 世界BOSS已被【' + apiCUserCharacInfoGetCurCharacName(this.user) + '】击杀!',
+              `<怪物攻城活动> 世界BOSS已被【${apiCUserCharacInfoGetCurCharacName(this.user)}】击杀!`,
               14
             )
             //P3阶段已结束
@@ -741,7 +733,7 @@ function onEndEventVillageAttack() {
       //频道内广播本轮活动排行榜第一名玩家名字
       const rankFirstCharacName = apiGetCharacNameByCharacNo(rankFirstCharacNo)
       apiGameWorldSendNotiPacketMessage(
-        '<怪物攻城活动> 恭喜勇士 【' + rankFirstCharacName + '】 成为个人积分排行榜第一名(' + maxPt + 'pt)!',
+        `<怪物攻城活动> 恭喜勇士 【${rankFirstCharacName}】 成为个人积分排行榜第一名(${maxPt}pt)!`,
         14
       )
     }
@@ -782,62 +774,17 @@ function onEndEventVillageAttack() {
 
 // ============================================================================
 
-// ============================================================================
-// 模块公共 API 注册区
-// ============================================================================
 if (!globalThis.dnfPlugin) {
   globalThis.dnfPlugin = {}
 }
 
-/**
- * Registers public symbols exported by villageAttack.js.
- * Symbols are also attached to globalThis to preserve old script-style references
- * between modules loaded through Frida Script.load().
- * @returns {void}
- */
-function registerCurrentModuleSymbols() {
-  globalThis.eventVillageAttackSaveToDb = eventVillageAttackSaveToDb
-  globalThis.dnfPlugin.eventVillageAttackSaveToDb = eventVillageAttackSaveToDb
-  globalThis.eventVillageAttackLoadFromDb = eventVillageAttackLoadFromDb
-  globalThis.dnfPlugin.eventVillageAttackLoadFromDb = eventVillageAttackLoadFromDb
-  globalThis.doTimerDispatch = doTimerDispatch
-  globalThis.dnfPlugin.doTimerDispatch = doTimerDispatch
-  globalThis.apiGuardMutexGuard = apiGuardMutexGuard
-  globalThis.dnfPlugin.apiGuardMutexGuard = apiGuardMutexGuard
-  globalThis.hookTimerDispatcherDispatch = hookTimerDispatcherDispatch
-  globalThis.dnfPlugin.hookTimerDispatcherDispatch = hookTimerDispatcherDispatch
-  globalThis.apiScheduleOnMainThread = apiScheduleOnMainThread
-  globalThis.dnfPlugin.apiScheduleOnMainThread = apiScheduleOnMainThread
-  globalThis.apiScheduleOnMainThreadDelay = apiScheduleOnMainThreadDelay
-  globalThis.dnfPlugin.apiScheduleOnMainThreadDelay = apiScheduleOnMainThreadDelay
-  globalThis.resetVillageAttackInfo = resetVillageAttackInfo
-  globalThis.dnfPlugin.resetVillageAttackInfo = resetVillageAttackInfo
-  globalThis.eventVillageAttackTimer = eventVillageAttackTimer
-  globalThis.dnfPlugin.eventVillageAttackTimer = eventVillageAttackTimer
-  globalThis.startVillageAttack = startVillageAttack
-  globalThis.dnfPlugin.startVillageAttack = startVillageAttack
-  globalThis.onStartEventVillageAttack = onStartEventVillageAttack
-  globalThis.dnfPlugin.onStartEventVillageAttack = onStartEventVillageAttack
-  globalThis.startEventVillageAttackTimer = startEventVillageAttackTimer
-  globalThis.dnfPlugin.startEventVillageAttackTimer = startEventVillageAttackTimer
-  globalThis.startEventVillageAttack = startEventVillageAttack
-  globalThis.dnfPlugin.startEventVillageAttack = startEventVillageAttack
-  globalThis.setVillageAttackDungeonDifficult = setVillageAttackDungeonDifficult
-  globalThis.dnfPlugin.setVillageAttackDungeonDifficult = setVillageAttackDungeonDifficult
-  globalThis.eventVillageAttackBroadcastDiffcult = eventVillageAttackBroadcastDiffcult
-  globalThis.dnfPlugin.eventVillageAttackBroadcastDiffcult = eventVillageAttackBroadcastDiffcult
-  globalThis.eventVillageAttackGetRemainTime = eventVillageAttackGetRemainTime
-  globalThis.dnfPlugin.eventVillageAttackGetRemainTime = eventVillageAttackGetRemainTime
-  globalThis.gameworldUpdateVillageAttackScore = gameworldUpdateVillageAttackScore
-  globalThis.dnfPlugin.gameworldUpdateVillageAttackScore = gameworldUpdateVillageAttackScore
-  globalThis.notifyVillageAttackScore = notifyVillageAttackScore
-  globalThis.dnfPlugin.notifyVillageAttackScore = notifyVillageAttackScore
-  globalThis.hookVillageAttack = hookVillageAttack
-  globalThis.dnfPlugin.hookVillageAttack = hookVillageAttack
-  globalThis.endVillageAttack = endVillageAttack
-  globalThis.dnfPlugin.endVillageAttack = endVillageAttack
-  globalThis.onEndEventVillageAttack = onEndEventVillageAttack
-  globalThis.dnfPlugin.onEndEventVillageAttack = onEndEventVillageAttack
-}
-
-registerCurrentModuleSymbols()
+__dnfExport({
+  eventVillageAttackSaveToDb, eventVillageAttackLoadFromDb, doTimerDispatch,
+  apiGuardMutexGuard, hookTimerDispatcherDispatch, apiScheduleOnMainThread,
+  apiScheduleOnMainThreadDelay, resetVillageAttackInfo, eventVillageAttackTimer,
+  startVillageAttack, onStartEventVillageAttack, startEventVillageAttackTimer,
+  startEventVillageAttack, setVillageAttackDungeonDifficult,
+  eventVillageAttackBroadcastDiffcult, eventVillageAttackGetRemainTime,
+  gameworldUpdateVillageAttackScore, notifyVillageAttackScore,
+  hookVillageAttack, endVillageAttack, onEndEventVillageAttack
+})

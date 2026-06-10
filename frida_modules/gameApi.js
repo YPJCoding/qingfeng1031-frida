@@ -53,7 +53,7 @@ function loadConfig(path) {
   pluginSafeCall('load_config', function () {
     const data = apiReadFile(path, 'r', 10 * 1024 * 1024)
     if (!data) {
-      pluginLogWarn('配置文件不存在或读取失败: ' + path)
+      pluginLogWarn(`配置文件不存在或读取失败: ${path}`)
       globalConfig = {}
       return
     }
@@ -192,7 +192,7 @@ function enableOnlineReward() {
         //发消息通知客户端奖励已发送
         apiCUserSendNotiPacketMessage(
           user,
-          '[' + getTimestamp() + '] 在线奖励已发送(当前阶段点券奖励:' + rewardCashCera + ')',
+          `[${getTimestamp()}] 在线奖励已发送(当前阶段点券奖励:${rewardCashCera})`,
           6
         )
       }
@@ -652,120 +652,22 @@ function uninitDb() {
 
 // ============================================================================
 
-// ============================================================================
-// 模块公共 API 注册区
-// ============================================================================
 if (!globalThis.dnfPlugin) {
   globalThis.dnfPlugin = {}
 }
 
-/**
- * Registers public symbols exported by gameApi.js.
- * Symbols are also attached to globalThis to preserve old script-style references
- * between modules loaded through Frida Script.load().
- * @returns {void}
- */
-function registerCurrentModuleSymbols() {
-  globalThis.strlen = strlen
-  globalThis.dnfPlugin.strlen = strlen
-  globalThis.getRandomInt = getRandomInt
-  globalThis.dnfPlugin.getRandomInt = getRandomInt
-  globalThis.apiReadFile = apiReadFile
-  globalThis.dnfPlugin.apiReadFile = apiReadFile
-  globalThis.loadConfig = loadConfig
-  globalThis.dnfPlugin.loadConfig = loadConfig
-  globalThis.apiCSystemTimeGetCurSec = apiCSystemTimeGetCurSec
-  globalThis.dnfPlugin.apiCSystemTimeGetCurSec = apiCSystemTimeGetCurSec
-  globalThis.findItem = findItem
-  globalThis.dnfPlugin.findItem = findItem
-  globalThis.CMailBoxHelperReqDBSendNewSystemMail = CMailBoxHelperReqDBSendNewSystemMail
-  globalThis.dnfPlugin.CMailBoxHelperReqDBSendNewSystemMail = CMailBoxHelperReqDBSendNewSystemMail
-  globalThis.apiCUserCharacInfoGetCurCharacName = apiCUserCharacInfoGetCurCharacName
-  globalThis.dnfPlugin.apiCUserCharacInfoGetCurCharacName = apiCUserCharacInfoGetCurCharacName
-  globalThis.apiRechargeCashCera = apiRechargeCashCera
-  globalThis.dnfPlugin.apiRechargeCashCera = apiRechargeCashCera
-  globalThis.apiRechargeCashCeraPoint = apiRechargeCashCeraPoint
-  globalThis.dnfPlugin.apiRechargeCashCeraPoint = apiRechargeCashCeraPoint
-  globalThis.enableOnlineReward = enableOnlineReward
-  globalThis.dnfPlugin.enableOnlineReward = enableOnlineReward
-  globalThis.apiCUserGainExpSp = apiCUserGainExpSp
-  globalThis.dnfPlugin.apiCUserGainExpSp = apiCUserGainExpSp
-  globalThis.apiGameworldUserMapBegin = apiGameworldUserMapBegin
-  globalThis.dnfPlugin.apiGameworldUserMapBegin = apiGameworldUserMapBegin
-  globalThis.apiGameworldUserMapEnd = apiGameworldUserMapEnd
-  globalThis.dnfPlugin.apiGameworldUserMapEnd = apiGameworldUserMapEnd
-  globalThis.apiGameworldUserMapGet = apiGameworldUserMapGet
-  globalThis.dnfPlugin.apiGameworldUserMapGet = apiGameworldUserMapGet
-  globalThis.apiGameworldUserMapNext = apiGameworldUserMapNext
-  globalThis.dnfPlugin.apiGameworldUserMapNext = apiGameworldUserMapNext
-  globalThis.apiGameworldForeach = apiGameworldForeach
-  globalThis.dnfPlugin.apiGameworldForeach = apiGameworldForeach
-  globalThis.apiTodUserStateSetEnterLayer = apiTodUserStateSetEnterLayer
-  globalThis.dnfPlugin.apiTodUserStateSetEnterLayer = apiTodUserStateSetEnterLayer
-  globalThis.apiGetCharacNameByCharacNo = apiGetCharacNameByCharacNo
-  globalThis.dnfPlugin.apiGetCharacNameByCharacNo = apiGetCharacNameByCharacNo
-  globalThis.apiWongWorkCMailBoxHelperReqDBSendNewSystemMultiMail = apiWongWorkCMailBoxHelperReqDBSendNewSystemMultiMail
-  globalThis.dnfPlugin.apiWongWorkCMailBoxHelperReqDBSendNewSystemMultiMail = apiWongWorkCMailBoxHelperReqDBSendNewSystemMultiMail
-  globalThis.apiGameworldSendMail = apiGameworldSendMail
-  globalThis.dnfPlugin.apiGameworldSendMail = apiGameworldSendMail
-  globalThis.apiPacketGuardPacketGuard = apiPacketGuardPacketGuard
-  globalThis.dnfPlugin.apiPacketGuardPacketGuard = apiPacketGuardPacketGuard
-  globalThis.apiPacketBufGetByte = apiPacketBufGetByte
-  globalThis.dnfPlugin.apiPacketBufGetByte = apiPacketBufGetByte
-  globalThis.apiCUserGetGuildName = apiCUserGetGuildName
-  globalThis.dnfPlugin.apiCUserGetGuildName = apiCUserGetGuildName
-  globalThis.apiPacketBufGetShort = apiPacketBufGetShort
-  globalThis.dnfPlugin.apiPacketBufGetShort = apiPacketBufGetShort
-  globalThis.apiPacketBufGetInt = apiPacketBufGetInt
-  globalThis.dnfPlugin.apiPacketBufGetInt = apiPacketBufGetInt
-  globalThis.apiPacketBufGetBinary = apiPacketBufGetBinary
-  globalThis.dnfPlugin.apiPacketBufGetBinary = apiPacketBufGetBinary
-  globalThis.apiPacketBufGetBuf = apiPacketBufGetBuf
-  globalThis.dnfPlugin.apiPacketBufGetBuf = apiPacketBufGetBuf
-  globalThis.apiCUserSendNotiPacketMessage = apiCUserSendNotiPacketMessage
-  globalThis.dnfPlugin.apiCUserSendNotiPacketMessage = apiCUserSendNotiPacketMessage
-  globalThis.apiInterfacePacketBufPutString = apiInterfacePacketBufPutString
-  globalThis.dnfPlugin.apiInterfacePacketBufPutString = apiInterfacePacketBufPutString
-  globalThis.apiGameWorldSendNotiPacketMessage = apiGameWorldSendNotiPacketMessage
-  globalThis.dnfPlugin.apiGameWorldSendNotiPacketMessage = apiGameWorldSendNotiPacketMessage
-  globalThis.apiMySQLOpen = apiMySQLOpen
-  globalThis.dnfPlugin.apiMySQLOpen = apiMySQLOpen
-  globalThis.apiMySQLExec = apiMySQLExec
-  globalThis.dnfPlugin.apiMySQLExec = apiMySQLExec
-  globalThis.apiMySQLGetInt = apiMySQLGetInt
-  globalThis.dnfPlugin.apiMySQLGetInt = apiMySQLGetInt
-  globalThis.apiMySQLGetUint = apiMySQLGetUint
-  globalThis.dnfPlugin.apiMySQLGetUint = apiMySQLGetUint
-  globalThis.apiMySQLGetShort = apiMySQLGetShort
-  globalThis.dnfPlugin.apiMySQLGetShort = apiMySQLGetShort
-  globalThis.apiMySQLGetFloat = apiMySQLGetFloat
-  globalThis.dnfPlugin.apiMySQLGetFloat = apiMySQLGetFloat
-  globalThis.apiMySQLGetStr = apiMySQLGetStr
-  globalThis.dnfPlugin.apiMySQLGetStr = apiMySQLGetStr
-  globalThis.apiMySQLGetBinary = apiMySQLGetBinary
-  globalThis.dnfPlugin.apiMySQLGetBinary = apiMySQLGetBinary
-  globalThis.initDb = initDb
-  globalThis.dnfPlugin.initDb = initDb
-  globalThis.uninitDb = uninitDb
-  globalThis.dnfPlugin.uninitDb = uninitDb
-  Object.defineProperty(globalThis, 'globalConfig', {
-    get: function () {
-      return globalConfig
-    },
-    set: function (value) {
-      globalConfig = value
-    },
-    configurable: true
-  })
-  Object.defineProperty(globalThis.dnfPlugin, 'globalConfig', {
-    get: function () {
-      return globalConfig
-    },
-    set: function (value) {
-      globalConfig = value
-    },
-    configurable: true
-  })
-}
-
-registerCurrentModuleSymbols()
+__dnfExport({
+  strlen, getRandomInt, apiReadFile, loadConfig, apiCSystemTimeGetCurSec, findItem,
+  CMailBoxHelperReqDBSendNewSystemMail, apiCUserCharacInfoGetCurCharacName,
+  apiRechargeCashCera, apiRechargeCashCeraPoint, enableOnlineReward, apiCUserGainExpSp,
+  apiGameworldUserMapBegin, apiGameworldUserMapEnd, apiGameworldUserMapGet,
+  apiGameworldUserMapNext, apiGameworldForeach, apiTodUserStateSetEnterLayer,
+  apiGetCharacNameByCharacNo, apiWongWorkCMailBoxHelperReqDBSendNewSystemMultiMail,
+  apiGameworldSendMail, apiPacketGuardPacketGuard, apiPacketBufGetByte,
+  apiCUserGetGuildName, apiPacketBufGetShort, apiPacketBufGetInt, apiPacketBufGetBinary,
+  apiPacketBufGetBuf, apiCUserSendNotiPacketMessage, apiInterfacePacketBufPutString,
+  apiGameWorldSendNotiPacketMessage, apiMySQLOpen, apiMySQLExec,
+  apiMySQLGetInt, apiMySQLGetUint, apiMySQLGetShort, apiMySQLGetFloat,
+  apiMySQLGetStr, apiMySQLGetBinary, initDb, uninitDb
+})
+__dnfMutable('globalConfig', () => globalConfig, (v) => { globalConfig = v })

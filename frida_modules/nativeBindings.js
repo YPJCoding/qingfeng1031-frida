@@ -30,32 +30,21 @@ let logDay = null
  * @param {unknown} msg 参数。
  * @returns {unknown} 返回值。*/
 function log(msg) {
-  let date = new Date()
-  date = new Date(date.setHours(date.getHours() + 0)) //转换到本地时间
-  const year = date.getFullYear().toString()
-  const month = (date.getMonth() + 1).toString()
-  const day = date.getDate().toString()
-  const hour = date.getHours().toString()
-  const minute = date.getMinutes().toString()
-  const second = date.getSeconds().toString()
-  const ms = date.getMilliseconds().toString()
-  //日志按日期记录
+  const d = new Date()
+  const pad = n => String(n).padStart(2, '0')
+  const day = d.getDate().toString()
+  const timestamp = `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(day)} ${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}.${String(d.getMilliseconds())}`
   if (fLog == null || logDay != day) {
     closeLogFile()
     apiMkdir(fridaLogDirPath)
     fLog = new File(
-      fridaLogDirPath + 'frida_' + apiCEnvironmentGetFileName() + '_' + year + '_' + month + '_' + day + '.log',
+      `${fridaLogDirPath}frida_${apiCEnvironmentGetFileName()}_${d.getFullYear()}_${pad(d.getMonth() + 1)}_${pad(day)}.log`,
       'a+'
     )
     logDay = day
   }
-  //时间戳
-  const timestamp = year + '-' + month + '-' + day + ' ' + hour + ':' + minute + ':' + second + '.' + ms
-  //控制台日志
-  console.log('[' + timestamp + ']' + msg)
-  //文件日志
-  fLog.write('[' + timestamp + ']' + msg + '\n')
-  //立即写日志到文件中
+  console.log(`[${timestamp}]${msg}`)
+  fLog.write(`[${timestamp}]${msg}\n`)
   fLog.flush()
 }
 /** closeLogFile。
@@ -410,230 +399,34 @@ const fread = createSystemNativeFunction('fread', 'int', ['pointer', 'int', 'int
 const fclose = createSystemNativeFunction('fclose', 'int', ['pointer'])
 // ============================================================================
 
-// ============================================================================
-// 模块公共 API 注册区
-// ============================================================================
 if (!globalThis.dnfPlugin) {
   globalThis.dnfPlugin = {}
 }
 
-/**
- * Registers public symbols exported by nativeBindings.js.
- * Symbols are also attached to globalThis to preserve old script-style references
- * between modules loaded through Frida Script.load().
- * @returns {void}
- */
-function registerCurrentModuleSymbols() {
-  globalThis.gCEnvironment = gCEnvironment
-  globalThis.dnfPlugin.gCEnvironment = gCEnvironment
-  globalThis.cEnvironmentGetFileName = cEnvironmentGetFileName
-  globalThis.dnfPlugin.cEnvironmentGetFileName = cEnvironmentGetFileName
-  globalThis.apiCEnvironmentGetFileName = apiCEnvironmentGetFileName
-  globalThis.dnfPlugin.apiCEnvironmentGetFileName = apiCEnvironmentGetFileName
-  globalThis.fridaLogDirPath = fridaLogDirPath
-  globalThis.dnfPlugin.fridaLogDirPath = fridaLogDirPath
-  globalThis.log = log
-  globalThis.dnfPlugin.log = log
-  globalThis.closeLogFile = closeLogFile
-  globalThis.dnfPlugin.closeLogFile = closeLogFile
-  globalThis.bin2hex = bin2hex
-  globalThis.dnfPlugin.bin2hex = bin2hex
-  globalThis.cUserCharacInfoEnableSaveCharacStat = cUserCharacInfoEnableSaveCharacStat
-  globalThis.dnfPlugin.cUserCharacInfoEnableSaveCharacStat = cUserCharacInfoEnableSaveCharacStat
-  globalThis.cUserGetState = cUserGetState
-  globalThis.dnfPlugin.cUserGetState = cUserGetState
-  globalThis.cUserGetAccId = cUserGetAccId
-  globalThis.dnfPlugin.cUserGetAccId = cUserGetAccId
-  globalThis.cUserCharacInfoGetCurCharacNo = cUserCharacInfoGetCurCharacNo
-  globalThis.dnfPlugin.cUserCharacInfoGetCurCharacNo = cUserCharacInfoGetCurCharacNo
-  globalThis.cUserCharacInfoGetCharacLevel = cUserCharacInfoGetCharacLevel
-  globalThis.dnfPlugin.cUserCharacInfoGetCharacLevel = cUserCharacInfoGetCharacLevel
-  globalThis.cUserCharacInfoGetCurCharacName = cUserCharacInfoGetCurCharacName
-  globalThis.dnfPlugin.cUserCharacInfoGetCurCharacName = cUserCharacInfoGetCurCharacName
-  globalThis.cUserCharacInfoGetLevelUpExp = cUserCharacInfoGetLevelUpExp
-  globalThis.dnfPlugin.cUserCharacInfoGetLevelUpExp = cUserCharacInfoGetLevelUpExp
-  globalThis.cUserCharacInfoGetCurCharacInvenW = cUserCharacInfoGetCurCharacInvenW
-  globalThis.dnfPlugin.cUserCharacInfoGetCurCharacInvenW = cUserCharacInfoGetCurCharacInvenW
-  globalThis.cDungeonGetIndex = cDungeonGetIndex
-  globalThis.dnfPlugin.cDungeonGetIndex = cDungeonGetIndex
-  globalThis.cInventoryGetInvenRef = cInventoryGetInvenRef
-  globalThis.dnfPlugin.cInventoryGetInvenRef = cInventoryGetInvenRef
-  globalThis.invenItemIsEquipableItemType = invenItemIsEquipableItemType
-  globalThis.dnfPlugin.invenItemIsEquipableItemType = invenItemIsEquipableItemType
-  globalThis.cItemGetRarity = cItemGetRarity
-  globalThis.dnfPlugin.cItemGetRarity = cItemGetRarity
-  globalThis.cItemGetUsableLevel = cItemGetUsableLevel
-  globalThis.dnfPlugin.cItemGetUsableLevel = cItemGetUsableLevel
-  globalThis.cItemGetItemGroupName = cItemGetItemGroupName
-  globalThis.dnfPlugin.cItemGetItemGroupName = cItemGetItemGroupName
-  globalThis.invenItemIsEmpty = invenItemIsEmpty
-  globalThis.dnfPlugin.invenItemIsEmpty = invenItemIsEmpty
-  globalThis.invenItemGetKey = invenItemGetKey
-  globalThis.dnfPlugin.invenItemGetKey = invenItemGetKey
-  globalThis.invenItemGetAddInfo = invenItemGetAddInfo
-  globalThis.dnfPlugin.invenItemGetAddInfo = invenItemGetAddInfo
-  globalThis.wongWorkCAvatarItemMgrGetJewelSocketData = wongWorkCAvatarItemMgrGetJewelSocketData
-  globalThis.dnfPlugin.wongWorkCAvatarItemMgrGetJewelSocketData = wongWorkCAvatarItemMgrGetJewelSocketData
-  globalThis.gGameWorld = gGameWorld
-  globalThis.dnfPlugin.gGameWorld = gGameWorld
-  globalThis.gCDataManager = gCDataManager
-  globalThis.dnfPlugin.gCDataManager = gCDataManager
-  globalThis.cInventoryGetAvatarItemMgrR = cInventoryGetAvatarItemMgrR
-  globalThis.dnfPlugin.cInventoryGetAvatarItemMgrR = cInventoryGetAvatarItemMgrR
-  globalThis.cDataManagerFindItem = cDataManagerFindItem
-  globalThis.dnfPlugin.cDataManagerFindItem = cDataManagerFindItem
-  globalThis.cDataManagerFindQuest = cDataManagerFindQuest
-  globalThis.dnfPlugin.cDataManagerFindQuest = cDataManagerFindQuest
-  globalThis.cStackableItemGetItemType = cStackableItemGetItemType
-  globalThis.dnfPlugin.cStackableItemGetItemType = cStackableItemGetItemType
-  globalThis.cStackableItemGetJewelTargetSocket = cStackableItemGetJewelTargetSocket
-  globalThis.dnfPlugin.cStackableItemGetJewelTargetSocket = cStackableItemGetJewelTargetSocket
-  globalThis.invenItemInvenItem = invenItemInvenItem
-  globalThis.dnfPlugin.invenItemInvenItem = invenItemInvenItem
-  globalThis.cUserGetCera = cUserGetCera
-  globalThis.dnfPlugin.cUserGetCera = cUserGetCera
-  globalThis.cUserGetCurCharacQuestW = cUserGetCurCharacQuestW
-  globalThis.dnfPlugin.cUserGetCurCharacQuestW = cUserGetCurCharacQuestW
-  globalThis.cSystemTimeGetCurSec = cSystemTimeGetCurSec
-  globalThis.dnfPlugin.cSystemTimeGetCurSec = cSystemTimeGetCurSec
-  globalThis.globalDataSSystemTime = globalDataSSystemTime
-  globalThis.dnfPlugin.globalDataSSystemTime = globalDataSSystemTime
-  globalThis.cUserCharacInfoGetLoginTick = cUserCharacInfoGetLoginTick
-  globalThis.dnfPlugin.cUserCharacInfoGetLoginTick = cUserCharacInfoGetLoginTick
-  globalThis.cUserCheckItemLock = cUserCheckItemLock
-  globalThis.dnfPlugin.cUserCheckItemLock = cUserCheckItemLock
-  globalThis.cItemIsStackable = cItemIsStackable
-  globalThis.dnfPlugin.cItemIsStackable = cItemIsStackable
-  globalThis.wongWorkCQuestClearIsClearedQuest = wongWorkCQuestClearIsClearedQuest
-  globalThis.dnfPlugin.wongWorkCQuestClearIsClearedQuest = wongWorkCQuestClearIsClearedQuest
-  globalThis.gameWorldFindUserFromWorldByaccid = gameWorldFindUserFromWorldByaccid
-  globalThis.dnfPlugin.gameWorldFindUserFromWorldByaccid = gameWorldFindUserFromWorldByaccid
-  globalThis.cUserQuestAction = cUserQuestAction
-  globalThis.dnfPlugin.cUserQuestAction = cUserQuestAction
-  globalThis.cUserSetGmQuestFlag = cUserSetGmQuestFlag
-  globalThis.dnfPlugin.cUserSetGmQuestFlag = cUserSetGmQuestFlag
-  globalThis.invenItemReset = invenItemReset
-  globalThis.dnfPlugin.invenItemReset = invenItemReset
-  globalThis.cInventoryUseMoney = cInventoryUseMoney
-  globalThis.dnfPlugin.cInventoryUseMoney = cInventoryUseMoney
-  globalThis.cInventoryDeleteItem = cInventoryDeleteItem
-  globalThis.dnfPlugin.cInventoryDeleteItem = cInventoryDeleteItem
-  globalThis.cUserGainExpSp = cUserGainExpSp
-  globalThis.dnfPlugin.cUserGainExpSp = cUserGainExpSp
-  globalThis.dbUpdateAvatarJewelSlotMakeRequest = dbUpdateAvatarJewelSlotMakeRequest
-  globalThis.dnfPlugin.dbUpdateAvatarJewelSlotMakeRequest = dbUpdateAvatarJewelSlotMakeRequest
-  globalThis.cUserSend = cUserSend
-  globalThis.dnfPlugin.cUserSend = cUserSend
-  globalThis.cUserSendNotiPacketMessage = cUserSendNotiPacketMessage
-  globalThis.dnfPlugin.cUserSendNotiPacketMessage = cUserSendNotiPacketMessage
-  globalThis.gameWorldSendAll = gameWorldSendAll
-  globalThis.dnfPlugin.gameWorldSendAll = gameWorldSendAll
-  globalThis.gameWorldSendAllWithState = gameWorldSendAllWithState
-  globalThis.dnfPlugin.gameWorldSendAllWithState = gameWorldSendAllWithState
-  globalThis.cUserSendUpdateItemList = cUserSendUpdateItemList
-  globalThis.dnfPlugin.cUserSendUpdateItemList = cUserSendUpdateItemList
-  globalThis.cUserSendClearQuestList = cUserSendClearQuestList
-  globalThis.dnfPlugin.cUserSendClearQuestList = cUserSendClearQuestList
-  globalThis.userQuestGetQuestInfo = userQuestGetQuestInfo
-  globalThis.dnfPlugin.userQuestGetQuestInfo = userQuestGetQuestInfo
-  globalThis.gameWorldGetUserCountInWorld = gameWorldGetUserCountInWorld
-  globalThis.dnfPlugin.gameWorldGetUserCountInWorld = gameWorldGetUserCountInWorld
-  globalThis.gameworldUserMapBegin = gameworldUserMapBegin
-  globalThis.dnfPlugin.gameworldUserMapBegin = gameworldUserMapBegin
-  globalThis.gameworldUserMapEnd = gameworldUserMapEnd
-  globalThis.dnfPlugin.gameworldUserMapEnd = gameworldUserMapEnd
-  globalThis.gameworldUserMapNotEqual = gameworldUserMapNotEqual
-  globalThis.dnfPlugin.gameworldUserMapNotEqual = gameworldUserMapNotEqual
-  globalThis.gameworldUserMapGet = gameworldUserMapGet
-  globalThis.dnfPlugin.gameworldUserMapGet = gameworldUserMapGet
-  globalThis.gameworldUserMapNext = gameworldUserMapNext
-  globalThis.dnfPlugin.gameworldUserMapNext = gameworldUserMapNext
-  globalThis.wongWorkCMailBoxHelperReqDBSendNewSystemMultiMail = wongWorkCMailBoxHelperReqDBSendNewSystemMultiMail
-  globalThis.dnfPlugin.wongWorkCMailBoxHelperReqDBSendNewSystemMultiMail = wongWorkCMailBoxHelperReqDBSendNewSystemMultiMail
-  globalThis.wongWorkCMailBoxHelperMakeSystemMultiMailPostal = wongWorkCMailBoxHelperMakeSystemMultiMailPostal
-  globalThis.dnfPlugin.wongWorkCMailBoxHelperMakeSystemMultiMailPostal = wongWorkCMailBoxHelperMakeSystemMultiMailPostal
-  globalThis.wongWorkCMailBoxHelperReqDBSendNewAvatarMail = wongWorkCMailBoxHelperReqDBSendNewAvatarMail
-  globalThis.dnfPlugin.wongWorkCMailBoxHelperReqDBSendNewAvatarMail = wongWorkCMailBoxHelperReqDBSendNewAvatarMail
-  globalThis.stdVectorStdPairIntIntVector = stdVectorStdPairIntIntVector
-  globalThis.dnfPlugin.stdVectorStdPairIntIntVector = stdVectorStdPairIntIntVector
-  globalThis.stdVectorStdPairIntIntClear = stdVectorStdPairIntIntClear
-  globalThis.dnfPlugin.stdVectorStdPairIntIntClear = stdVectorStdPairIntIntClear
-  globalThis.stdMakePairIntInt = stdMakePairIntInt
-  globalThis.dnfPlugin.stdMakePairIntInt = stdMakePairIntInt
-  globalThis.stdVectorStdPairIntIntPushBack = stdVectorStdPairIntIntPushBack
-  globalThis.dnfPlugin.stdVectorStdPairIntIntPushBack = stdVectorStdPairIntIntPushBack
-  globalThis.wongWorkIpgCIPGHelperIPGInput = wongWorkIpgCIPGHelperIPGInput
-  globalThis.dnfPlugin.wongWorkIpgCIPGHelperIPGInput = wongWorkIpgCIPGHelperIPGInput
-  globalThis.wongWorkIpgCIPGHelperIPGQuery = wongWorkIpgCIPGHelperIPGQuery
-  globalThis.dnfPlugin.wongWorkIpgCIPGHelperIPGQuery = wongWorkIpgCIPGHelperIPGQuery
-  globalThis.wongWorkIpgCIPGHelperIPGInputPoint = wongWorkIpgCIPGHelperIPGInputPoint
-  globalThis.dnfPlugin.wongWorkIpgCIPGHelperIPGInputPoint = wongWorkIpgCIPGHelperIPGInputPoint
-  globalThis.packetBufGetByte = packetBufGetByte
-  globalThis.dnfPlugin.packetBufGetByte = packetBufGetByte
-  globalThis.packetBufGetShort = packetBufGetShort
-  globalThis.dnfPlugin.packetBufGetShort = packetBufGetShort
-  globalThis.packetBufGetInt = packetBufGetInt
-  globalThis.dnfPlugin.packetBufGetInt = packetBufGetInt
-  globalThis.packetBufGetBinary = packetBufGetBinary
-  globalThis.dnfPlugin.packetBufGetBinary = packetBufGetBinary
-  globalThis.packetGuardPacketGuard = packetGuardPacketGuard
-  globalThis.dnfPlugin.packetGuardPacketGuard = packetGuardPacketGuard
-  globalThis.interfacePacketBufPutHeader = interfacePacketBufPutHeader
-  globalThis.dnfPlugin.interfacePacketBufPutHeader = interfacePacketBufPutHeader
-  globalThis.interfacePacketBufPutByte = interfacePacketBufPutByte
-  globalThis.dnfPlugin.interfacePacketBufPutByte = interfacePacketBufPutByte
-  globalThis.interfacePacketBufPutShort = interfacePacketBufPutShort
-  globalThis.dnfPlugin.interfacePacketBufPutShort = interfacePacketBufPutShort
-  globalThis.interfacePacketBufPutInt = interfacePacketBufPutInt
-  globalThis.dnfPlugin.interfacePacketBufPutInt = interfacePacketBufPutInt
-  globalThis.interfacePacketBufPutBinary = interfacePacketBufPutBinary
-  globalThis.dnfPlugin.interfacePacketBufPutBinary = interfacePacketBufPutBinary
-  globalThis.interfacePacketBufFinalize = interfacePacketBufFinalize
-  globalThis.dnfPlugin.interfacePacketBufFinalize = interfacePacketBufFinalize
-  globalThis.destroyPacketGuardPacketGuard = destroyPacketGuardPacketGuard
-  globalThis.dnfPlugin.destroyPacketGuardPacketGuard = destroyPacketGuardPacketGuard
-  globalThis.fopen = fopen
-  globalThis.dnfPlugin.fopen = fopen
-  globalThis.fread = fread
-  globalThis.dnfPlugin.fread = fread
-  globalThis.fclose = fclose
-  globalThis.dnfPlugin.fclose = fclose
-  Object.defineProperty(globalThis, 'fLog', {
-    get: function () {
-      return fLog
-    },
-    set: function (value) {
-      fLog = value
-    },
-    configurable: true
-  })
-  Object.defineProperty(globalThis.dnfPlugin, 'fLog', {
-    get: function () {
-      return fLog
-    },
-    set: function (value) {
-      fLog = value
-    },
-    configurable: true
-  })
-  Object.defineProperty(globalThis, 'logDay', {
-    get: function () {
-      return logDay
-    },
-    set: function (value) {
-      logDay = value
-    },
-    configurable: true
-  })
-  Object.defineProperty(globalThis.dnfPlugin, 'logDay', {
-    get: function () {
-      return logDay
-    },
-    set: function (value) {
-      logDay = value
-    },
-    configurable: true
-  })
-}
-
-registerCurrentModuleSymbols()
+__dnfExport({
+  gCEnvironment, cEnvironmentGetFileName, apiCEnvironmentGetFileName, fridaLogDirPath, log, closeLogFile, bin2hex,
+  cUserCharacInfoEnableSaveCharacStat, cUserGetState, cUserGetAccId, cUserCharacInfoGetCurCharacNo,
+  cUserCharacInfoGetCharacLevel, cUserCharacInfoGetCurCharacName, cUserCharacInfoGetLevelUpExp,
+  cUserCharacInfoGetCurCharacInvenW, cDungeonGetIndex, cInventoryGetInvenRef, invenItemIsEquipableItemType,
+  cItemGetRarity, cItemGetUsableLevel, cItemGetItemGroupName, invenItemIsEmpty, invenItemGetKey,
+  invenItemGetAddInfo, wongWorkCAvatarItemMgrGetJewelSocketData, gGameWorld, gCDataManager,
+  cInventoryGetAvatarItemMgrR, cDataManagerFindItem, cDataManagerFindQuest, cStackableItemGetItemType,
+  cStackableItemGetJewelTargetSocket, invenItemInvenItem, cUserGetCera, cUserGetCurCharacQuestW,
+  cSystemTimeGetCurSec, globalDataSSystemTime, cUserCharacInfoGetLoginTick, cUserCheckItemLock,
+  cItemIsStackable, wongWorkCQuestClearIsClearedQuest, gameWorldFindUserFromWorldByaccid,
+  cUserQuestAction, cUserSetGmQuestFlag, invenItemReset, cInventoryUseMoney, cInventoryDeleteItem,
+  cUserGainExpSp, dbUpdateAvatarJewelSlotMakeRequest, cUserSend, cUserSendNotiPacketMessage,
+  gameWorldSendAll, gameWorldSendAllWithState, cUserSendUpdateItemList, cUserSendClearQuestList,
+  userQuestGetQuestInfo, gameWorldGetUserCountInWorld, gameworldUserMapBegin, gameworldUserMapEnd,
+  gameworldUserMapNotEqual, gameworldUserMapGet, gameworldUserMapNext,
+  wongWorkCMailBoxHelperReqDBSendNewSystemMultiMail, wongWorkCMailBoxHelperMakeSystemMultiMailPostal,
+  wongWorkCMailBoxHelperReqDBSendNewAvatarMail, stdVectorStdPairIntIntVector, stdVectorStdPairIntIntClear,
+  stdMakePairIntInt, stdVectorStdPairIntIntPushBack, wongWorkIpgCIPGHelperIPGInput,
+  wongWorkIpgCIPGHelperIPGQuery, wongWorkIpgCIPGHelperIPGInputPoint, packetBufGetByte,
+  packetBufGetShort, packetBufGetInt, packetBufGetBinary, packetGuardPacketGuard,
+  interfacePacketBufPutHeader, interfacePacketBufPutByte, interfacePacketBufPutShort,
+  interfacePacketBufPutInt, interfacePacketBufPutBinary, interfacePacketBufFinalize,
+  destroyPacketGuardPacketGuard, fopen, fread, fclose
+})
+__dnfMutable('fLog', () => fLog, (v) => { fLog = v })
+__dnfMutable('logDay', () => logDay, (v) => { logDay = v })
