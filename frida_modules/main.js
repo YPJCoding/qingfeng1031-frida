@@ -155,6 +155,7 @@ function dispose() {
     pluginStarted = false
     pluginInstalledFeatureMap = {}
     closeLogFile()
+    closePluginLog()
     pluginLogInfo('-------------------- frida dispose done -----------------')
   }
 }

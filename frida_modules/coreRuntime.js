@@ -5,18 +5,45 @@
 
 // 05. 日志与安全调用工具
 // ============================================================================
+const pluginLogPath = '/data/frida/plugin.log'
+let pluginLogFile = null
+
+function ensurePluginLogFile() {
+  if (pluginLogFile) return
+  try {
+    pluginLogFile = new File(pluginLogPath, 'a+')
+  } catch (e) {}
+}
+
+function pluginFileLog(level, message) {
+  try {
+    ensurePluginLogFile()
+    if (pluginLogFile) {
+      pluginLogFile.write(`[${getTimestamp()}] [${level}] ${message}\n`)
+      pluginLogFile.flush()
+    }
+  } catch (e) {}
+}
+
+function closePluginLog() {
+  if (pluginLogFile) {
+    try { pluginLogFile.flush(); pluginLogFile.close() } catch (e) {}
+    pluginLogFile = null
+  }
+}
+
 function pluginLogInfo(message) {
-  console.log('[INFO] ' + message)
+  pluginFileLog('INFO', message)
 }
 function pluginLogWarn(message) {
-  console.log('[WARN] ' + message)
+  pluginFileLog('WARN', message)
 }
 function pluginLogError(message, error) {
   if (error) {
-    console.log('[ERROR] ' + message + ': ' + error)
+    pluginFileLog('ERROR', `${message}: ${error}`)
     return
   }
-  console.log('[ERROR] ' + message)
+  pluginFileLog('ERROR', message)
 }
 
 // Hook 回调、模块安装、数据库操作都建议通过该函数保护，避免单个功能异常影响整体脚本。
@@ -103,7 +130,7 @@ if (!globalThis.dnfPlugin) {
 }
 
 __dnfExport({
-  pluginLogInfo, pluginLogWarn, pluginLogError, pluginSafeCall,
+  pluginLogInfo, pluginLogWarn, pluginLogError, pluginSafeCall, closePluginLog,
   pluginNativeAbi, getSystemExportAddress, createSystemNativeFunction,
   isNullPointer, isValidPointer, sqlEscapeString, getTimestamp, apiMkdir
 })
