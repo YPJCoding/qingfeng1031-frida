@@ -14,8 +14,7 @@ globalThis.__dnfMutable = function (name, getter, setter) {
   const desc = { get: getter, configurable: true }
   if (setter) desc.set = setter
   Object.defineProperty(globalThis, name, desc)
-  const ns = globalThis.dnfPlugin || {}
-  Object.defineProperty(ns, name, desc)
+  Object.defineProperty(globalThis.dnfPlugin, name, desc)
 }
 
 const modulePathConfig = {

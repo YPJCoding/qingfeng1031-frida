@@ -521,7 +521,7 @@ function hookVillageAttack() {
         //if((map_id >= 40001) && (map_id <= 40095))
         if (stateOnFighting) {
           //怪物攻城活动未结束
-          if (villageAttackEventInfo != villageAttackStateEnd) {
+          if (villageAttackEventInfo.state != villageAttackStateEnd) {
             //正在挑战世界BOSS
             if (onFightingVillageMonsterId == tauMetaCowMonsterId) {
               //P3阶段
