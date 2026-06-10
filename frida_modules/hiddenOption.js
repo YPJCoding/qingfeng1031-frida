@@ -7,8 +7,6 @@
 // ============================================================================
 
 // 下发随机时装潜能属性前应用的内存补丁。
-/** applyHiddenOptionPatch。
- * @returns {unknown} 返回值。*/
 function applyHiddenOptionPatch() {
   // 关闭系统原本的属性分配逻辑。
   Memory.protect(ptr(0x08509d49), 3, 'rwx')
@@ -19,8 +17,6 @@ function applyHiddenOptionPatch() {
 }
 
 // 安装时装潜能相关 Hook。
-/** installHiddenOptionFix。
- * @returns {unknown} 返回值。*/
 function installHiddenOptionFix() {
   Interceptor.attach(ptr(0x08509b9e), {
     onEnter: function (args) {
@@ -40,13 +36,9 @@ function installHiddenOptionFix() {
 }
 
 // 旧函数名兼容。
-/** hiddenOption。
- * @returns {unknown} 返回值。*/
 function hiddenOption() {
   return applyHiddenOptionPatch()
 }
-/** startHiddenOption。
- * @returns {unknown} 返回值。*/
 function startHiddenOption() {
   return installHiddenOptionFix()
 }

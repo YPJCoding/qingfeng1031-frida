@@ -15,8 +15,6 @@ const cEnvironmentGetFileName = new NativeFunction(ptr(0x80da39a), 'pointer', ['
   abi: 'sysv'
 })
 //获取当前频道名
-/** apiCEnvironmentGetFileName。
- * @returns {unknown} 返回值。*/
 function apiCEnvironmentGetFileName() {
   const filename = cEnvironmentGetFileName(gCEnvironment())
   return filename.readUtf8String(-1)
@@ -26,9 +24,6 @@ function apiCEnvironmentGetFileName() {
 const fridaLogDirPath = './frida_log/'
 let fLog = null
 let logDay = null
-/** log。
- * @param {unknown} msg 参数。
- * @returns {unknown} 返回值。*/
 function log(msg) {
   const d = new Date()
   const pad = n => String(n).padStart(2, '0')
@@ -47,8 +42,6 @@ function log(msg) {
   fLog.write(`[${timestamp}]${msg}\n`)
   fLog.flush()
 }
-/** closeLogFile。
- * @returns {unknown} 返回值。*/
 function closeLogFile() {
   if (fLog == null) {
     return
@@ -61,10 +54,6 @@ function closeLogFile() {
 }
 
 //内存十六进制打印
-/** bin2hex。
- * @param {unknown} p 参数。
- * @param {unknown} len 参数。
- * @returns {unknown} 返回值。*/
 function bin2hex(p, len) {
   let hex = ''
   for (let i = 0; i < len; i++) {

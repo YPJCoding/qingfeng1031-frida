@@ -7,11 +7,6 @@
 // ============================================================================
 
 // 统一安装功能，避免在 start() 中堆叠大量业务代码。
-/** installPluginFeature。
- * @param {unknown} name 参数。
- * @param {unknown} enabled 参数。
- * @param {unknown} installer 参数。
- * @returns {unknown} 返回值。*/
 function installPluginFeature(name, enabled, installer) {
   if (!enabled) {
     pluginLogWarn(`功能已关闭: ${name}`)
@@ -29,8 +24,6 @@ function installPluginFeature(name, enabled, installer) {
 }
 
 // 安装业务功能。
-/** installBusinessFeatures。
- * @returns {unknown} 返回值。*/
 function installBusinessFeatures() {
   installPluginFeature('绝望之塔修复', pluginFeatureSwitch.towerOfDespair, function () {
     installTowerOfDespairFix(pluginRuntimeConfig.skipTodUserApc)
@@ -53,8 +46,6 @@ function installBusinessFeatures() {
 }
 
 // 安装基础服务。
-/** installCoreServices。
- * @returns {unknown} 返回值。*/
 function installCoreServices() {
   installPluginFeature('加载本地配置', pluginFeatureSwitch.loadConfig, function () {
     loadConfig(pluginRuntimeConfig.configPath)
@@ -71,8 +62,6 @@ function installCoreServices() {
 }
 let pluginStarted = false
 // 加载主功能。
-/** start。
- * @returns {unknown} 返回值。*/
 function start() {
   if (pluginStarted && !pluginRuntimeConfig.allowRepeatStart) {
     pluginLogWarn('start() 已执行过，本次跳过，避免重复安装 Hook。')
@@ -103,8 +92,6 @@ function start() {
 
 // 延迟加载插件。
 // early 阶段加载时，等待 check_argv 执行结束，再安装业务 Hook 和基础服务。
-/** awake。
- * @returns {unknown} 返回值。*/
 function awake() {
   if (globalThis.dnfPlugin?.entryEarlyHookInstalled) {
     pluginLogWarn('awake skipped: entry early hook already installed')
@@ -119,10 +106,6 @@ function awake() {
 }
 
 // 框架入口。
-/** 初始化插件。
- * @param {unknown} stage 参数。
- * @param {unknown} parameters 参数。
- * @returns {unknown} 返回值。*/
 function init(stage, parameters) {
   lifecycleState.initializing = true
   lifecycleState.failed = false
@@ -142,8 +125,6 @@ function init(stage, parameters) {
     pluginLogError('frida init failed', error)
   }
 }
-/** 释放插件资源。
- * @returns {unknown} 返回值。*/
 function dispose() {
   pluginLogInfo('-------------------- frida dispose called -----------------')
   if (lifecycleState.disposing) {

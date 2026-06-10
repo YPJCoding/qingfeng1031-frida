@@ -7,9 +7,6 @@
 // ============================================================================
 
 //修复绝望之塔 skip_user_apc: 为true时, 跳过每10层的UserAPC
-/** installTowerOfDespairFix。
- * @param {unknown} skipUserApc 参数。
- * @returns {unknown} 返回值。*/
 function installTowerOfDespairFix(skipUserApc) {
   //挑战成功后可以继续使用门票挑战
   Interceptor.attach(ptr(0x0864387e), {

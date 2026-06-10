@@ -8,9 +8,6 @@
 
 // 设置回归勇士判定天数。
 // 传入 day 后会写入对应秒数：day * 86400。
-/** setReturnUserDays。
- * @param {unknown} day 参数。
- * @returns {unknown} 返回值。*/
 function setReturnUserDays(day) {
   const time = day * 86400
   Memory.protect(pluginAddress.returnUserDays, 32, 'rwx')
@@ -18,9 +15,6 @@ function setReturnUserDays(day) {
 }
 
 // 旧函数名兼容。
-/** setReturnUser。
- * @param {unknown} day 参数。
- * @returns {unknown} 返回值。*/
 function setReturnUser(day) {
   return setReturnUserDays(day)
 }

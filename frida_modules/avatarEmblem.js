@@ -7,20 +7,12 @@
 // ============================================================================
 
 //获取时装在数据库中的uid
-/** apiGetAvartarUiId。
- * @param {unknown} avartar 参数。
- * @returns {unknown} 返回值。*/
 function apiGetAvartarUiId(avartar) {
   return avartar.add(7).readInt()
 }
 
 //设置时装插槽数据(时装插槽数据指针, 插槽, 徽章id)
 //jewel_type: 红=0x1, 黄=0x2, 绿=0x4, 蓝=0x8, 白金=0x10
-/** apiSetJewelSocketData。
- * @param {unknown} jewelSocketData 参数。
- * @param {unknown} slot 参数。
- * @param {unknown} emblemItemId 参数。
- * @returns {unknown} 返回值。*/
 function apiSetJewelSocketData(jewelSocketData, slot, emblemItemId) {
   if (!jewelSocketData.isNull()) {
     //每个槽数据长6个字节: 2字节槽类型+4字节徽章item_id
@@ -31,8 +23,6 @@ function apiSetJewelSocketData(jewelSocketData, slot, emblemItemId) {
 }
 
 //修复时装镶嵌
-/** installAvatarEmblemFix。
- * @returns {unknown} 返回值。*/
 function installAvatarEmblemFix() {
   //Dispatcher_UseJewel::dispatch_sig
   Interceptor.attach(ptr(0x8217bd6), {

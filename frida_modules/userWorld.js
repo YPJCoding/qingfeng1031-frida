@@ -9,8 +9,6 @@
 // 玩家进入 / 离开游戏世界时的统一处理。
 // 进入世界：可下发排行榜、同步怪物攻城状态、发送登录问候。
 // 离开世界：可刷新排行榜数据。
-/** hookUserInOutGameWorld。
- * @returns {unknown} 返回值。*/
 function hookUserInOutGameWorld() {
   Interceptor.attach(pluginAddress.gameWorldReach, {
     onEnter: function (args) {
@@ -46,16 +44,11 @@ function hookUserInOutGameWorld() {
 }
 
 // 旧函数名兼容。
-/** hookUserInoutGameWorld。
- * @returns {unknown} 返回值。*/
 function hookUserInoutGameWorld() {
   return hookUserInOutGameWorld()
 }
 
 //怪物攻城副本回调奖励处理函数
-/** VillageAttackedRewardSendReward。
- * @param {unknown} user 参数。
- * @returns {unknown} 返回值。*/
 function VillageAttackedRewardSendReward(user) {
   const rewardMap = {
     1: [3037, 5],  2: [3037, 5],  3: [3037, 5],  4: [1085, 2],  5: [1085, 5],

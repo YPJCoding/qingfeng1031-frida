@@ -46,9 +46,6 @@ let ranklist = {
 // 根据角色 ID 查询战力分。
 // 默认适配：SELECT ZLZ FROM frida.battle WHERE CID = charac_no。
 // 如果你使用其他战力表，只需要调整这里的 SQL 即可，不需要改排行榜其他逻辑。
-/** getRankScore。
- * @param {unknown} characNo 参数。
- * @returns {unknown} 返回值。*/
 function getRankScore(characNo) {
   let score = 0
   const query = `SELECT ZLZ FROM frida.battle WHERE CID='${characNo}';`
@@ -65,8 +62,6 @@ function getRankScore(characNo) {
 }
 
 // 创建一条空排行榜记录，字段结构保持和客户端协议一致。
-/** createEmptyRankingItem。
- * @returns {unknown} 返回值。*/
 function createEmptyRankingItem() {
   return {
     rank: 0,
@@ -82,9 +77,6 @@ function createEmptyRankingItem() {
 }
 
 // 读取当前角色身上的展示装备，用于排行榜站街外观显示。
-/** collectRankingEquipments。
- * @param {unknown} user 参数。
- * @returns {unknown} 返回值。*/
 function collectRankingEquipments(user) {
   const equipmentList = []
   const inven = cUserCharacInfoGetCurCharacInvenW(user)
@@ -103,9 +95,6 @@ function collectRankingEquipments(user) {
 }
 
 // 构建当前玩家的排行榜展示数据。
-/** buildRankingItemFromUser。
- * @param {unknown} user 参数。
- * @returns {unknown} 返回值。*/
 function buildRankingItemFromUser(user) {
   const item = createEmptyRankingItem()
   const characNo = cUserCharacInfoGetCurCharacNo(user)
@@ -122,26 +111,17 @@ function buildRankingItemFromUser(user) {
 }
 
 // 按角色名查找排行榜中的 key。
-/** findRankingKeyByCharacName。
- * @param {unknown} characName 参数。
- * @returns {unknown} 返回值。*/
 function findRankingKeyByCharacName(characName) {
   const entry = Object.entries(ranklist).find(([, v]) => v.characname === characName)
   return entry ? entry[0] : null
 }
 
 // 将排行榜对象转为数组，方便排序。
-/** getRankingArray。
- * @returns {unknown} 返回值。*/
 function getRankingArray() {
   return Object.values(ranklist)
 }
 
 // 根据战力分从高到低重建排行榜，只保留前三名。
-/** rebuildTopRanking。
- * @param {unknown} rankArray 参数。
- * @param {unknown} maxCount 参数。
- * @returns {unknown} 返回值。*/
 function rebuildTopRanking(rankArray, maxCount) {
   const result = {}
   let index = 0
@@ -155,9 +135,6 @@ function rebuildTopRanking(rankArray, maxCount) {
 }
 
 // 玩家离开游戏世界时刷新战力榜。
-/** updateRankingByUser。
- * @param {unknown} user 参数。
- * @returns {unknown} 返回值。*/
 function updateRankingByUser(user) {
   const item = buildRankingItemFromUser(user)
   let existingKey = null
@@ -181,8 +158,6 @@ function updateRankingByUser(user) {
 // all = true  时广播给全频道在线玩家。
 // all = false 时只发给指定 user。
 let rankingBroadcastLastAt = 0
-/** canBroadcastRanking。
- * @returns {unknown} 返回值。*/
 function canBroadcastRanking() {
   const now = Date.now()
   if (now - rankingBroadcastLastAt < 3000) {
@@ -191,10 +166,6 @@ function canBroadcastRanking() {
   rankingBroadcastLastAt = now
   return true
 }
-/** sendRankingList。
- * @param {unknown} user 参数。
- * @param {unknown} all 参数。
- * @returns {unknown} 返回值。*/
 function sendRankingList(user, all) {
   const packetGuard = apiPacketGuardPacketGuard()
   let key = null
@@ -232,8 +203,6 @@ function sendRankingList(user, all) {
 }
 
 // 热载脚本时，从数据库恢复排行榜数据。
-/** eventRankinfoLoadFromDb。
- * @returns {unknown} 返回值。*/
 function eventRankinfoLoadFromDb() {
   if (!isValidPointer(mySQLFrida)) {
     pluginLogWarn('[ranking] skip load: mysql frida not initialized')
@@ -250,8 +219,6 @@ function eventRankinfoLoadFromDb() {
 }
 
 // 热载脚本时，将排行榜数据写回数据库。
-/** eventRankinfoSaveToDb。
- * @returns {unknown} 返回值。*/
 function eventRankinfoSaveToDb() {
   pluginSafeCall('event_rankinfo_save_to_db', function () {
     if (!isValidPointer(mySQLFrida)) {
@@ -264,28 +231,15 @@ function eventRankinfoSaveToDb() {
 }
 
 // 旧函数名兼容：保留原脚本中的调用方式，外部如果仍调用旧名称也不会报错。
-/** GetRankNumber。
- * @param {unknown} characNo 参数。
- * @returns {unknown} 返回值。*/
 function GetRankNumber(characNo) {
   return getRankScore(characNo)
 }
-/** GetMyEquInfo。
- * @param {unknown} user 参数。
- * @returns {unknown} 返回值。*/
 function GetMyEquInfo(user) {
   return buildRankingItemFromUser(user)
 }
-/** SetRanking。
- * @param {unknown} user 参数。
- * @returns {unknown} 返回值。*/
 function SetRanking(user) {
   return updateRankingByUser(user)
 }
-/** SendRankLits。
- * @param {unknown} user 参数。
- * @param {unknown} all 参数。
- * @returns {unknown} 返回值。*/
 function SendRankLits(user, all) {
   return sendRankingList(user, all)
 }

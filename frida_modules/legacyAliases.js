@@ -6,21 +6,12 @@
 // 21. 旧命名兼容区
 // ============================================================================
 // 兼容旧脚本中可能被外部手动调用的函数名。
-/** fixTod。
- * @param {unknown} skipUserApc 参数。
- * @returns {unknown} 返回值。*/
 function fixTod(skipUserApc) {
   return installTowerOfDespairFix(skipUserApc)
 }
-/** fixUseEmblem。
- * @returns {unknown} 返回值。*/
 function fixUseEmblem() {
   return installAvatarEmblemFix()
 }
-/** getRandomInt2。
- * @param {unknown} min 参数。
- * @param {unknown} max 参数。
- * @returns {unknown} 返回值。*/
 function getRandomInt2(min, max) {
   return getRandomInt(min, max)
 }

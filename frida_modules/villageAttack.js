@@ -7,8 +7,6 @@
 // ============================================================================
 
 //怪物攻城活动数据存档
-/** eventVillageAttackSaveToDb。
- * @returns {unknown} 返回值。*/
 function eventVillageAttackSaveToDb() {
   apiMySQLExec(
     mySQLFrida,
@@ -17,8 +15,6 @@ function eventVillageAttackSaveToDb() {
 }
 
 //从数据库载入怪物攻城活动数据
-/** eventVillageAttackLoadFromDb。
- * @returns {unknown} 返回值。*/
 function eventVillageAttackLoadFromDb() {
   if (apiMySQLExec(mySQLFrida, "select event_info from game_event where event_id = 'villageattack';")) {
     if (mySQLGetNRows(mySQLFrida) == 1) {
@@ -30,8 +26,6 @@ function eventVillageAttackLoadFromDb() {
 }
 
 //处理到期的自定义定时器
-/** doTimerDispatch。
- * @returns {unknown} 返回值。*/
 function doTimerDispatch() {
   //当前待处理的定时器任务列表
   const taskList = []
@@ -51,8 +45,6 @@ function doTimerDispatch() {
 }
 
 //申请锁(申请后务必手动释放!!!)
-/** apiGuardMutexGuard。
- * @returns {unknown} 返回值。*/
 function apiGuardMutexGuard() {
   const a1 = Memory.alloc(100)
   guardMutexGuard(a1, gTimerQueue().add(16))
@@ -60,8 +52,6 @@ function apiGuardMutexGuard() {
 }
 
 //挂接消息分发线程 确保代码线程安全
-/** hookTimerDispatcherDispatch。
- * @returns {unknown} 返回值。*/
 function hookTimerDispatcherDispatch() {
   //hook TimerDispatcher::dispatch
   //服务器内置定时器 每秒至少执行一次
@@ -75,10 +65,6 @@ function hookTimerDispatcherDispatch() {
 }
 
 //在dispatcher线程执行(args为函数f的参数组成的数组, 若f无参数args可为null)
-/** apiScheduleOnMainThread。
- * @param {unknown} f 参数。
- * @param {unknown} args 参数。
- * @returns {unknown} 返回值。*/
 function apiScheduleOnMainThread(f, args) {
   //线程安全
   const guard = apiGuardMutexGuard()
@@ -88,18 +74,11 @@ function apiScheduleOnMainThread(f, args) {
 }
 
 //设置定时器 到期后在dispatcher线程执行
-/** apiScheduleOnMainThreadDelay。
- * @param {unknown} f 参数。
- * @param {unknown} args 参数。
- * @param {unknown} delay 参数。
- * @returns {unknown} 返回值。*/
 function apiScheduleOnMainThreadDelay(f, args, delay) {
   setTimeout(apiScheduleOnMainThread, delay, f, args)
 }
 
 //重置活动数据
-/** resetVillageAttackInfo。
- * @returns {unknown} 返回值。*/
 function resetVillageAttackInfo() {
   villageAttackEventInfo.state = villageAttackStateP1
   villageAttackEventInfo.score = 0
@@ -113,8 +92,6 @@ function resetVillageAttackInfo() {
 }
 
 //怪物攻城活动计时器(每5秒触发一次)
-/** eventVillageAttackTimer。
- * @returns {unknown} 返回值。*/
 function eventVillageAttackTimer() {
   if (villageAttackEventInfo.state == villageAttackStateEnd) return
   //活动结束检测
@@ -156,8 +133,6 @@ function eventVillageAttackTimer() {
 }
 
 //开启怪物攻城活动
-/** startVillageAttack。
- * @returns {unknown} 返回值。*/
 function startVillageAttack() {
   console.log('start_villageattack-------------')
   const a3 = Memory.alloc(100)
@@ -168,8 +143,6 @@ function startVillageAttack() {
 }
 
 //开始怪物攻城活动
-/** onStartEventVillageAttack。
- * @returns {unknown} 返回值。*/
 function onStartEventVillageAttack() {
   //重置活动数据
   resetVillageAttackInfo()
@@ -182,8 +155,6 @@ function onStartEventVillageAttack() {
 }
 
 //开启怪物攻城活动定时器
-/** startEventVillageAttackTimer。
- * @returns {unknown} 返回值。*/
 function startEventVillageAttackTimer() {
   //获取当前系统时间
   const curTime = apiCSystemTimeGetCurSec()
@@ -199,8 +170,6 @@ function startEventVillageAttackTimer() {
 }
 
 //开启怪物攻城活动
-/** startEventVillageAttack。
- * @returns {unknown} 返回值。*/
 function startEventVillageAttack() {
   //patch相关函数, 修复活动流程
   hookVillageAttack()
@@ -215,17 +184,12 @@ function startEventVillageAttack() {
 }
 
 //设置怪物攻城副本难度(0-4: 普通-英雄)
-/** setVillageAttackDungeonDifficult。
- * @param {unknown} difficult 参数。
- * @returns {unknown} 返回值。*/
 function setVillageAttackDungeonDifficult(difficult) {
   Memory.protect(ptr(0x085b9605), 4, 'rwx') //修改内存保护属性为可写
   ptr(0x085b9605).writeInt(difficult)
 }
 
 //世界广播怪物攻城活动当前进度/难度
-/** eventVillageAttackBroadcastDiffcult。
- * @returns {unknown} 返回值。*/
 function eventVillageAttackBroadcastDiffcult() {
   if (villageAttackEventInfo.state != villageAttackStateEnd) {
     apiGameWorldSendNotiPacketMessage(
@@ -236,8 +200,6 @@ function eventVillageAttackBroadcastDiffcult() {
 }
 
 //计算活动剩余时间
-/** eventVillageAttackGetRemainTime。
- * @returns {unknown} 返回值。*/
 function eventVillageAttackGetRemainTime() {
   const curTime = apiCSystemTimeGetCurSec()
   const eventEndTime = villageAttackEventInfo.startTime + eventVillageAttackTotalTime
@@ -246,8 +208,6 @@ function eventVillageAttackGetRemainTime() {
 }
 
 //更新怪物攻城当前进度(广播给频道内在线玩家)
-/** gameworldUpdateVillageAttackScore。
- * @returns {unknown} 返回值。*/
 function gameworldUpdateVillageAttackScore() {
   //计算活动剩余时间
   const remainTime = eventVillageAttackGetRemainTime()
@@ -263,9 +223,6 @@ function gameworldUpdateVillageAttackScore() {
 }
 
 //通知玩家怪物攻城进度
-/** notifyVillageAttackScore。
- * @param {unknown} user 参数。
- * @returns {unknown} 返回值。*/
 function notifyVillageAttackScore(user) {
   //玩家当前PT点
   const characNo = cUserCharacInfoGetCurCharacNo(user).toString()
@@ -288,8 +245,6 @@ function notifyVillageAttackScore(user) {
 }
 
 //怪物攻城活动相关patch
-/** hookVillageAttack。
- * @returns {unknown} 返回值。*/
 function hookVillageAttack() {
   //怪物攻城副本回调
   Interceptor.attach(ptr(0x086b34a0), {
@@ -652,15 +607,11 @@ function hookVillageAttack() {
 }
 
 //结束怪物攻城活动(立即销毁攻城怪物, 不开启逆袭之谷, 不发送活动奖励)
-/** endVillageAttack。
- * @returns {unknown} 返回值。*/
 function endVillageAttack() {
   villageAttackedCVillageMonsterMgrOnDestroyVillageMonster(globalDataSVillageMonsterMgr.readPointer(), 2)
 }
 
 //结束怪物攻城活动
-/** onEndEventVillageAttack。
- * @returns {unknown} 返回值。*/
 function onEndEventVillageAttack() {
   if (villageAttackEventInfo.state == villageAttackStateEnd) return
   //设置活动状态

@@ -7,10 +7,6 @@
 // ============================================================================
 
 //无条件完成指定任务并领取奖励
-/** apiForceClearQuest。
- * @param {unknown} user 参数。
- * @param {unknown} questId 参数。
- * @returns {unknown} 返回值。*/
 function apiForceClearQuest(user, questId) {
   //设置GM完成任务模式(无条件完成任务)
   cUserSetGmQuestFlag(user, 1)
@@ -28,10 +24,6 @@ function apiForceClearQuest(user, questId) {
 }
 
 //完成指定任务并领取奖励
-/** clearDoingQuestEx。
- * @param {unknown} user 参数。
- * @param {unknown} questId 参数。
- * @returns {unknown} 返回值。*/
 function clearDoingQuestEx(user, questId) {
   //完成指定任务并领取奖励1
   //玩家任务信息

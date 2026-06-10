@@ -12,20 +12,11 @@ const strlen = new NativeFunction(ptr(0x0807e3b0), 'int', ['pointer'], {
 }) //获取字符串长度
 let globalConfig = {}
 //获取随机数
-/** getRandomInt。
- * @param {unknown} min 参数。
- * @param {unknown} max 参数。
- * @returns {unknown} 返回值。*/
 function getRandomInt(min, max) {
   return Math.floor(Math.random() * (max - min)) + min
 }
 
 //读取文件
-/** apiReadFile。
- * @param {unknown} path 参数。
- * @param {unknown} mode 参数。
- * @param {unknown} len 参数。
- * @returns {unknown} 返回值。*/
 function apiReadFile(path, mode, len) {
   const pathPtr = Memory.allocUtf8String(path)
   const modePtr = Memory.allocUtf8String(mode)
@@ -46,9 +37,6 @@ function apiReadFile(path, mode, len) {
 }
 
 //加载本地配置文件(json格式)
-/** loadConfig。
- * @param {unknown} path 参数。
- * @returns {unknown} 返回值。*/
 function loadConfig(path) {
   pluginSafeCall('load_config', function () {
     const data = apiReadFile(path, 'r', 10 * 1024 * 1024)
@@ -62,26 +50,16 @@ function loadConfig(path) {
 }
 
 //获取系统UTC时间(秒)
-/** apiCSystemTimeGetCurSec。
- * @returns {unknown} 返回值。*/
 function apiCSystemTimeGetCurSec() {
   return globalDataSSystemTime.readInt()
 }
 
 //获取道具数据
-/** findItem。
- * @param {unknown} itemId 参数。
- * @returns {unknown} 返回值。*/
 function findItem(itemId) {
   return cDataManagerFindItem(gCDataManager(), itemId)
 }
 
 //邮件函数封装
-/** CMailBoxHelperReqDBSendNewSystemMail。
- * @param {unknown} User 参数。
- * @param {unknown} itemId 参数。
- * @param {unknown} itemCount 参数。
- * @returns {unknown} 返回值。*/
 function CMailBoxHelperReqDBSendNewSystemMail(User, itemId, itemCount) {
   const retitem = findItem(itemId)
   if (retitem) {
@@ -117,9 +95,6 @@ function CMailBoxHelperReqDBSendNewSystemMail(User, itemId, itemCount) {
 }
 
 //获取角色名字
-/** apiCUserCharacInfoGetCurCharacName。
- * @param {unknown} user 参数。
- * @returns {unknown} 返回值。*/
 function apiCUserCharacInfoGetCurCharacName(user) {
   const p = cUserCharacInfoGetCurCharacName(user)
   if (p.isNull()) {
@@ -129,10 +104,6 @@ function apiCUserCharacInfoGetCurCharacName(user) {
 }
 
 //点券充值 (禁止直接修改billing库所有表字段, 点券相关操作务必调用数据库存储过程!)
-/** apiRechargeCashCera。
- * @param {unknown} user 参数。
- * @param {unknown} amount 参数。
- * @returns {unknown} 返回值。*/
 function apiRechargeCashCera(user, amount) {
   //充值
   wongWorkIpgCIPGHelperIPGInput(
@@ -152,10 +123,6 @@ function apiRechargeCashCera(user, amount) {
 }
 
 //代币充值 (禁止直接修改billing库所有表字段, 点券相关操作务必调用数据库存储过程!)
-/** apiRechargeCashCeraPoint。
- * @param {unknown} user 参数。
- * @param {unknown} amount 参数。
- * @returns {unknown} 返回值。*/
 function apiRechargeCashCeraPoint(user, amount) {
   //充值
   wongWorkIpgCIPGHelperIPGInputPoint(ptr(0x941f734).readPointer(), user, amount, 4, ptr(0), ptr(0))
@@ -164,8 +131,6 @@ function apiRechargeCashCeraPoint(user, amount) {
 }
 
 //在线奖励
-/** enableOnlineReward。
- * @returns {unknown} 返回值。*/
 function enableOnlineReward() {
   //在线每5min发一次奖, 在线时间越长, 奖励越高
   //CUser::WorkPerFiveMin
@@ -202,10 +167,6 @@ function enableOnlineReward() {
 }
 
 //给角色发经验
-/** apiCUserGainExpSp。
- * @param {unknown} user 参数。
- * @param {unknown} exp 参数。
- * @returns {unknown} 返回值。*/
 function apiCUserGainExpSp(user, exp) {
   const a2 = Memory.alloc(4)
   const a3 = Memory.alloc(4)
@@ -213,8 +174,6 @@ function apiCUserGainExpSp(user, exp) {
 }
 
 //获取在线玩家列表表头
-/** apiGameworldUserMapBegin。
- * @returns {unknown} 返回值。*/
 function apiGameworldUserMapBegin() {
   const begin = Memory.alloc(4)
   gameworldUserMapBegin(begin, gGameWorld().add(308))
@@ -222,8 +181,6 @@ function apiGameworldUserMapBegin() {
 }
 
 //获取在线玩家列表表尾
-/** apiGameworldUserMapEnd。
- * @returns {unknown} 返回值。*/
 function apiGameworldUserMapEnd() {
   const end = Memory.alloc(4)
   gameworldUserMapEnd(end, gGameWorld().add(308))
@@ -231,17 +188,11 @@ function apiGameworldUserMapEnd() {
 }
 
 //获取当前正在遍历的玩家
-/** apiGameworldUserMapGet。
- * @param {unknown} it 参数。
- * @returns {unknown} 返回值。*/
 function apiGameworldUserMapGet(it) {
   return gameworldUserMapGet(it).add(4).readPointer()
 }
 
 //遍历在线玩家列表
-/** apiGameworldUserMapNext。
- * @param {unknown} it 参数。
- * @returns {unknown} 返回值。*/
 function apiGameworldUserMapNext(it) {
   const next = Memory.alloc(4)
   gameworldUserMapNext(next, it)
@@ -249,10 +200,6 @@ function apiGameworldUserMapNext(it) {
 }
 
 //对全服在线玩家执行回调函数
-/** apiGameworldForeach。
- * @param {unknown} f 参数。
- * @param {unknown} args 参数。
- * @returns {unknown} 返回值。*/
 function apiGameworldForeach(f, args) {
   //遍历在线玩家列表
   const it = apiGameworldUserMapBegin()
@@ -272,10 +219,6 @@ function apiGameworldForeach(f, args) {
 }
 
 //设置角色当前绝望之塔层数
-/** apiTodUserStateSetEnterLayer。
- * @param {unknown} user 参数。
- * @param {unknown} layer 参数。
- * @returns {unknown} 返回值。*/
 function apiTodUserStateSetEnterLayer(user, layer) {
   const todLayer = Memory.alloc(100)
   todLayerTodLayer(todLayer, layer)
@@ -284,9 +227,6 @@ function apiTodUserStateSetEnterLayer(user, layer) {
 }
 
 //根据角色id查询角色名
-/** apiGetCharacNameByCharacNo。
- * @param {unknown} characNo 参数。
- * @returns {unknown} 返回值。*/
 function apiGetCharacNameByCharacNo(characNo) {
   //从数据库中查询角色名
   if (apiMySQLExec(mySQLTaiwanCain, 'select charac_name from charac_info where charac_no=' + characNo + ';')) {
@@ -301,13 +241,6 @@ function apiGetCharacNameByCharacNo(characNo) {
 }
 
 //发系统邮件(多道具)(角色charac_no, 邮件标题, 邮件正文, 金币数量, 道具列表)
-/** apiWongWorkCMailBoxHelperReqDBSendNewSystemMultiMail。
- * @param {unknown} targetCharacNo 参数。
- * @param {unknown} title 参数。
- * @param {unknown} text 参数。
- * @param {unknown} gold 参数。
- * @param {unknown} itemList 参数。
- * @returns {unknown} 返回值。*/
 function apiWongWorkCMailBoxHelperReqDBSendNewSystemMultiMail(targetCharacNo, title, text, gold, itemList) {
   //添加道具附件
   const vector = Memory.alloc(100)
@@ -347,12 +280,6 @@ function apiWongWorkCMailBoxHelperReqDBSendNewSystemMultiMail(targetCharacNo, ti
 }
 
 //全服在线玩家发信
-/** apiGameworldSendMail。
- * @param {unknown} title 参数。
- * @param {unknown} text 参数。
- * @param {unknown} gold 参数。
- * @param {unknown} itemList 参数。
- * @returns {unknown} 返回值。*/
 function apiGameworldSendMail(title, text, gold, itemList) {
   //遍历在线玩家列表
   const it = apiGameworldUserMapBegin()
@@ -374,8 +301,6 @@ function apiGameworldSendMail(title, text, gold, itemList) {
 }
 
 //服务器组包
-/** apiPacketGuardPacketGuard。
- * @returns {unknown} 返回值。*/
 function apiPacketGuardPacketGuard() {
   const packetGuard = Memory.alloc(0x20000)
   packetGuardPacketGuard(packetGuard)
@@ -383,9 +308,6 @@ function apiPacketGuardPacketGuard() {
 }
 
 //从客户端封包中读取数据(失败会抛异常, 调用方必须做异常处理)
-/** apiPacketBufGetByte。
- * @param {unknown} packetBuf 参数。
- * @returns {unknown} 返回值。*/
 function apiPacketBufGetByte(packetBuf) {
   const data = Memory.alloc(1)
   if (packetBufGetByte(packetBuf, data)) {
@@ -393,9 +315,6 @@ function apiPacketBufGetByte(packetBuf) {
   }
   throw new Error('PacketBuf_get_byte Fail!')
 }
-/** apiCUserGetGuildName。
- * @param {unknown} user 参数。
- * @returns {unknown} 返回值。*/
 function apiCUserGetGuildName(user) {
   const p = cUserGetGuildName(user)
   if (p.isNull()) {
@@ -403,9 +322,6 @@ function apiCUserGetGuildName(user) {
   }
   return p.readUtf8String(-1)
 }
-/** apiPacketBufGetShort。
- * @param {unknown} packetBuf 参数。
- * @returns {unknown} 返回值。*/
 function apiPacketBufGetShort(packetBuf) {
   const data = Memory.alloc(2)
   if (packetBufGetShort(packetBuf, data)) {
@@ -413,9 +329,6 @@ function apiPacketBufGetShort(packetBuf) {
   }
   throw new Error('PacketBuf_get_short Fail!')
 }
-/** apiPacketBufGetInt。
- * @param {unknown} packetBuf 参数。
- * @returns {unknown} 返回值。*/
 function apiPacketBufGetInt(packetBuf) {
   const data = Memory.alloc(4)
   if (packetBufGetInt(packetBuf, data)) {
@@ -423,10 +336,6 @@ function apiPacketBufGetInt(packetBuf) {
   }
   throw new Error('PacketBuf_get_int Fail!')
 }
-/** apiPacketBufGetBinary。
- * @param {unknown} packetBuf 参数。
- * @param {unknown} len 参数。
- * @returns {unknown} 返回值。*/
 function apiPacketBufGetBinary(packetBuf, len) {
   const data = Memory.alloc(len)
   if (packetBufGetBinary(packetBuf, data, len)) {
@@ -436,19 +345,11 @@ function apiPacketBufGetBinary(packetBuf, len) {
 }
 
 //获取原始封包数据
-/** apiPacketBufGetBuf。
- * @param {unknown} packetBuf 参数。
- * @returns {unknown} 返回值。*/
 function apiPacketBufGetBuf(packetBuf) {
   return packetBuf.add(20).readPointer().add(13)
 }
 
 //给角色发消息
-/** apiCUserSendNotiPacketMessage。
- * @param {unknown} user 参数。
- * @param {unknown} msg 参数。
- * @param {unknown} msgType 参数。
- * @returns {unknown} 返回值。*/
 function apiCUserSendNotiPacketMessage(user, msg, msgType) {
   const p = Memory.allocUtf8String(msg)
   cUserSendNotiPacketMessage(user, p, msgType)
@@ -456,10 +357,6 @@ function apiCUserSendNotiPacketMessage(user, msg, msgType) {
 }
 
 //发送字符串给客户端
-/** apiInterfacePacketBufPutString。
- * @param {unknown} packetGuard 参数。
- * @param {unknown} s 参数。
- * @returns {unknown} 返回值。*/
 function apiInterfacePacketBufPutString(packetGuard, s) {
   const p = Memory.allocUtf8String(s)
   const len = strlen(p)
@@ -469,10 +366,6 @@ function apiInterfacePacketBufPutString(packetGuard, s) {
 }
 
 //世界广播(频道内公告)
-/** apiGameWorldSendNotiPacketMessage。
- * @param {unknown} msg 参数。
- * @param {unknown} msgType 参数。
- * @returns {unknown} 返回值。*/
 function apiGameWorldSendNotiPacketMessage(msg, msgType) {
   const packetGuard = apiPacketGuardPacketGuard()
   interfacePacketBufPutHeader(packetGuard, 0, 12)
@@ -486,13 +379,6 @@ function apiGameWorldSendNotiPacketMessage(msg, msgType) {
 }
 
 //打开数据库
-/** apiMySQLOpen。
- * @param {unknown} dbName 参数。
- * @param {unknown} dbIp 参数。
- * @param {unknown} dbPort 参数。
- * @param {unknown} dbAccount 参数。
- * @param {unknown} dbPassword 参数。
- * @returns {unknown} 返回值。*/
 function apiMySQLOpen(dbName, dbIp, dbPort, dbAccount, dbPassword) {
   //mysql初始化
   const mysql = Memory.alloc(0x80000)
@@ -512,10 +398,6 @@ function apiMySQLOpen(dbName, dbIp, dbPort, dbAccount, dbPassword) {
 }
 
 //mysql查询(返回mysql句柄)(注意线程安全)
-/** apiMySQLExec。
- * @param {unknown} mysql 参数。
- * @param {unknown} sql 参数。
- * @returns {unknown} 返回值。*/
 function apiMySQLExec(mysql, sql) {
   const sqlPtr = Memory.allocUtf8String(sql)
   mySQLSetQuery2(mysql, sqlPtr)
@@ -525,50 +407,30 @@ function apiMySQLExec(mysql, sql) {
 //查询sql结果
 //使用前务必保证api_MySQL_exec返回0
 //并且MySQL_get_n_rows与预期一致
-/** apiMySQLGetInt。
- * @param {unknown} mysql 参数。
- * @param {unknown} fieldIndex 参数。
- * @returns {unknown} 返回值。*/
 function apiMySQLGetInt(mysql, fieldIndex) {
   const v = Memory.alloc(4)
   if (1 == mySQLGetInt(mysql, fieldIndex, v)) return v.readInt()
   //log('api_MySQL_get_int Fail!!!')
   return null
 }
-/** apiMySQLGetUint。
- * @param {unknown} mysql 参数。
- * @param {unknown} fieldIndex 参数。
- * @returns {unknown} 返回值。*/
 function apiMySQLGetUint(mysql, fieldIndex) {
   const v = Memory.alloc(4)
   if (1 == mySQLGetUint(mysql, fieldIndex, v)) return v.readUInt()
   //log('api_MySQL_get_uint Fail!!!')
   return null
 }
-/** apiMySQLGetShort。
- * @param {unknown} mysql 参数。
- * @param {unknown} fieldIndex 参数。
- * @returns {unknown} 返回值。*/
 function apiMySQLGetShort(mysql, fieldIndex) {
   const v = Memory.alloc(4)
   if (1 == mySQLGetShort(mysql, fieldIndex, v)) return v.readShort()
   //log('MySQL_get_short Fail!!!')
   return null
 }
-/** apiMySQLGetFloat。
- * @param {unknown} mysql 参数。
- * @param {unknown} fieldIndex 参数。
- * @returns {unknown} 返回值。*/
 function apiMySQLGetFloat(mysql, fieldIndex) {
   const v = Memory.alloc(4)
   if (1 == mySQLGetFloat(mysql, fieldIndex, v)) return v.readFloat()
   //log('MySQL_get_float Fail!!!')
   return null
 }
-/** apiMySQLGetStr。
- * @param {unknown} mysql 参数。
- * @param {unknown} fieldIndex 参数。
- * @returns {unknown} 返回值。*/
 function apiMySQLGetStr(mysql, fieldIndex) {
   const binaryLength = mySQLGetBinaryLength(mysql, fieldIndex)
   if (binaryLength > 0) {
@@ -578,10 +440,6 @@ function apiMySQLGetStr(mysql, fieldIndex) {
   //log('MySQL_get_str Fail!!!')
   return null
 }
-/** apiMySQLGetBinary。
- * @param {unknown} mysql 参数。
- * @param {unknown} fieldIndex 参数。
- * @returns {unknown} 返回值。*/
 function apiMySQLGetBinary(mysql, fieldIndex) {
   const binaryLength = mySQLGetBinaryLength(mysql, fieldIndex)
   if (binaryLength > 0) {
@@ -593,8 +451,6 @@ function apiMySQLGetBinary(mysql, fieldIndex) {
 }
 
 //初始化数据库(打开数据库/建库建表/数据库字段扩展)
-/** initDb。
- * @returns {unknown} 返回值。*/
 function initDb() {
   //配置文件
   const config = globalConfig['db_config']
@@ -626,8 +482,6 @@ function initDb() {
 }
 
 //关闭数据库（卸载插件前调用）
-/** uninitDb。
- * @returns {unknown} 返回值。*/
 function uninitDb() {
   //活动数据存档
   eventVillageAttackSaveToDb()
