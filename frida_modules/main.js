@@ -66,11 +66,16 @@ function installCoreServices() {
 let pluginStarted = false
 // 加载主功能。
 function start() {
+  if (globalThis.dnfPlugin?._started) {
+    bootLog('[WARN] start() 已执行过，本次跳过，避免重复安装 Hook。')
+    return
+  }
   if (pluginStarted && !pluginRuntimeConfig.allowRepeatStart) {
     bootLog('[WARN] start() 已执行过，本次跳过，避免重复安装 Hook。')
     return
   }
   pluginStarted = true
+  globalThis.dnfPlugin._started = true
   bootLog('[INFO] ++++++++++++++++++++ frida init start ++++++++++++++++++++')
   try {
     const bootFile = new File('/tmp/frida_modular_boot.log', 'a+')
@@ -152,6 +157,9 @@ function dispose() {
     lifecycleState.disposing = false
     pluginStarted = false
     pluginInstalledFeatureMap = {}
+    if (globalThis.dnfPlugin) {
+      globalThis.dnfPlugin._started = false
+    }
     closeBootLog()
     closeBootLog()
     bootLog('[INFO] -------------------- frida dispose done -----------------')
