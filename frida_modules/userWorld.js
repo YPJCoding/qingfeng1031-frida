@@ -18,7 +18,7 @@ function hookUserInOutGameWorld() {
       const user = this.user
       pluginSafeCall('onReachGameWorld', function () {
         if (pluginFeatureSwitch.ranking) {
-          apiScheduleOnMainThread(sendRankingList, [user, true])
+          apiScheduleOnMainThread(sendRankingList, [user])
         }
         if (pluginFeatureSwitch.villageAttack && villageAttackEventInfo.state != villageAttackStateEnd) {
           notifyVillageAttackScore(user)
@@ -31,14 +31,7 @@ function hookUserInOutGameWorld() {
     }
   })
   Interceptor.attach(pluginAddress.gameWorldLeave, {
-    onEnter: function (args) {
-      const user = args[1]
-      pluginSafeCall('onLeaveGameWorld', function () {
-        if (pluginFeatureSwitch.ranking) {
-          updateRankingByUser(user)
-        }
-      })
-    },
+    onEnter: function (args) {},
     onLeave: function (retval) {}
   })
 }

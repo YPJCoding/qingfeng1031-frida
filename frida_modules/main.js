@@ -141,11 +141,6 @@ function dispose() {
   }
   lifecycleState.disposing = true
   try {
-    pluginSafeCall('dispose_save_ranking', function () {
-      if (pluginFeatureSwitch.database && isValidPointer(mySQLFrida)) {
-        eventRankinfoSaveToDb()
-      }
-    })
     pluginSafeCall('dispose_uninit_db', function () {
       if (pluginFeatureSwitch.database && isValidPointer(mySQLFrida)) {
         uninitDb()
