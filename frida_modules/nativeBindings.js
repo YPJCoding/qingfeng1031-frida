@@ -357,6 +357,9 @@ const fread = createSystemNativeFunction('fread', 'int', ['pointer', 'int', 'int
 const fclose = createSystemNativeFunction('fclose', 'int', ['pointer'])
 //爆率控制
 const cLuckPointGetItemRarity = new NativeFunction(ptr(0x8550BE4), 'int', ['pointer', 'pointer', 'int', 'int'], { abi: 'sysv' })
+//GM权限检查
+const cGmAccountsIsGM = new NativeFunction(ptr(0x08109346), 'int', ['pointer', 'int'], { abi: 'sysv' })
+const cUserIsGMUser = new NativeFunction(ptr(0x0814589c), 'int', ['pointer'], { abi: 'sysv' })
 // ============================================================================
 
 if (!globalThis.dnfPlugin) {
@@ -386,6 +389,7 @@ __dnfExport({
   packetBufGetShort, packetBufGetInt, packetBufGetBinary, packetGuardPacketGuard,
   interfacePacketBufPutHeader, interfacePacketBufPutByte, interfacePacketBufPutShort,
   interfacePacketBufPutInt, interfacePacketBufPutBinary, interfacePacketBufFinalize,
-  destroyPacketGuardPacketGuard, fopen, fread, fclose, cLuckPointGetItemRarity
+  destroyPacketGuardPacketGuard, fopen, fread, fclose, cLuckPointGetItemRarity,
+  cGmAccountsIsGM, cUserIsGMUser
 })
 

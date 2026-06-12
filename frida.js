@@ -32,6 +32,7 @@ const modulePathConfig = {
     ['avatarEmblem', 'avatarEmblem.js'],
     ['ranking', 'ranking.js'],
     ['dropRate', 'dropRate.js'],
+    ['gmBypass', 'gmBypass.js'],
     ['userWorld', 'userWorld.js'],
     ['returnUser', 'returnUser.js'],
     ['hiddenOption', 'hiddenOption.js'],

@@ -36,7 +36,9 @@ const pluginFeatureSwitch = {
   // 在线奖励：原脚本默认关闭，这里继续默认关闭。
   onlineReward: true,
   // 爆率控制：修改装备掉落品级倍率。
-  dropRate: true
+  dropRate: true,
+  // GM权限绕过：Hook权限检查，使所有角色可使用 // 命令。
+  gmBypass: true
 }
 // ============================================================================
 // 02. 运行配置区

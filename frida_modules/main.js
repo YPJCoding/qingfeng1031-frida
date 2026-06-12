@@ -53,6 +53,9 @@ function installCoreServices() {
   installPluginFeature('爆率控制', pluginFeatureSwitch.dropRate, function () {
     installDropRate()
   })
+  installPluginFeature('GM权限绕过', pluginFeatureSwitch.gmBypass, function () {
+    installGmBypass()
+  })
   installPluginFeature('初始化数据库', pluginFeatureSwitch.database, function () {
     apiScheduleOnMainThread(initDb, null)
   })
