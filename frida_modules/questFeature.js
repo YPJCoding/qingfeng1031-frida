@@ -15,6 +15,7 @@ function apiForceClearQuest(user, questId) {
   //完成任务
   cUserQuestAction(user, 35, questId, 0, 0)
   //领取任务奖励(倒数第二个参数表示领取奖励的编号, -1=领取不需要选择的奖励; 0=领取可选奖励中的第1个奖励; 1=领取可选奖励中的第二个奖励)
+  cUserQuestAction(user, 36, questId, 0, 1)
   cUserQuestAction(user, 36, questId, -1, 1)
   //服务端有反作弊机制: 任务完成时间间隔不能小于1秒.  这里将上次任务完成时间清零 可以连续提交任务
   user.add(0x79644).writeInt(0)

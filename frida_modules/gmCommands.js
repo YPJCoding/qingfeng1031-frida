@@ -56,9 +56,9 @@ function ensureItemNameListLoaded() {
 let heffPartyTag = 0
 
 function startHellParty() {
-  Interceptor.attach(ptr(0x85B15BC), {
+  Interceptor.attach(ptr(0x085a0954), {
     onEnter(args) {
-      if (heffPartyTag) args[0].add(2).writeInt(1)
+      if (heffPartyTag) args[3] = ptr(1)
     }
   })
 }
@@ -271,6 +271,12 @@ function cmdQuestClear(user) {
 
 function cmdQuestReset(user) {
   userQuestReset(user)
+  cUserSendClearQuestList(user)
+  const userQuest = cUserGetCurCharacQuestW(user)
+  const packetGuard = apiPacketGuardPacketGuard()
+  userQuestGetQuestInfo(userQuest, packetGuard)
+  cUserSend(user, packetGuard)
+  destroyPacketGuardPacketGuard(packetGuard)
   apiCUserSendNotiPacketMessage(user, '所有任务已重置', 1)
 }
 
