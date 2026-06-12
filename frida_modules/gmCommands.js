@@ -354,10 +354,12 @@ function routeGmCommand(user, rawMsg) {
 function installGmCommands() {
   try { startHellParty() } catch (e) {}
 
-  Interceptor.attach(ptr(0x0820BA90), {
+  Interceptor.attach(ptr(0x820BBDE), {
     onEnter(args) {
       const user = args[1]
-      let msg = args[2].readUtf8String()
+      const rawPacketBuf = apiPacketBufGetBuf(args[2])
+      const msgLen = rawPacketBuf.readInt()
+      let msg = rawPacketBuf.add(4).readUtf8String(msgLen)
       msg = msg.slice(2)
       bootLog('[GM-COMMAND] user=' + apiCUserCharacInfoGetCurCharacName(user) + ' msg=' + msg)
       routeGmCommand(user, msg)
