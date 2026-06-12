@@ -66,9 +66,14 @@ let heffPartyTag = 0
 function startHellParty() {
   Interceptor.attach(ptr(0x085a0954), {
     onEnter(args) {
-      if (heffPartyTag) args[3] = ptr(1)
+      bootLog('[HELL] hook触发, heffPartyTag=' + heffPartyTag)
+      if (heffPartyTag) {
+        args[3] = ptr(1)
+        bootLog('[HELL] 深渊模式已注入')
+      }
     }
   })
+  bootLog('[HELL] startHellParty hook installed at 0x085a0954')
 }
 
 // 命令处理器
@@ -247,10 +252,18 @@ function cmdLevel(user, args) {
 
 function cmdQuestFinish(user) {
   const userQuest = cUserGetCurCharacQuestW(user)
+  let success = 0, fail = 0
   for (let i = 0; i < 20; i++) {
     const questId = userQuest.add(4 * (i + 7500 + 2)).readInt()
     if (questId > 0) {
-      try { clearDoingQuestEx(user, questId) } catch (e) {}
+      try {
+        clearDoingQuestEx(user, questId)
+        success++
+        bootLog('[QUEST-FINISH] quest=' + questId + ' OK')
+      } catch (e) {
+        fail++
+        bootLog('[QUEST-FINISH] quest=' + questId + ' FAIL: ' + e)
+      }
     }
   }
   cUserSendClearQuestList(user)
@@ -258,15 +271,23 @@ function cmdQuestFinish(user) {
   userQuestGetQuestInfo(userQuest, packetGuard)
   cUserSend(user, packetGuard)
   destroyPacketGuardPacketGuard(packetGuard)
-  apiCUserSendNotiPacketMessage(user, '任务完成处理完毕', 1)
+  apiCUserSendNotiPacketMessage(user, '任务完成: 成功' + success + ' 失败' + fail, 1)
 }
 
 function cmdQuestClear(user) {
   const userQuest = cUserGetCurCharacQuestW(user)
+  let success = 0, fail = 0
   for (let i = 0; i < 20; i++) {
     const questId = userQuest.add(4 * (i + 7500 + 2)).readInt()
     if (questId > 0) {
-      try { apiForceClearQuest(user, questId) } catch (e) {}
+      try {
+        apiForceClearQuest(user, questId)
+        success++
+        bootLog('[QUEST-CLEAR] quest=' + questId + ' OK')
+      } catch (e) {
+        fail++
+        bootLog('[QUEST-CLEAR] quest=' + questId + ' FAIL: ' + e)
+      }
     }
   }
   cUserSendClearQuestList(user)
@@ -274,7 +295,7 @@ function cmdQuestClear(user) {
   userQuestGetQuestInfo(userQuest, packetGuard)
   cUserSend(user, packetGuard)
   destroyPacketGuardPacketGuard(packetGuard)
-  apiCUserSendNotiPacketMessage(user, '任务完成并领取奖励完毕', 1)
+  apiCUserSendNotiPacketMessage(user, '任务完成并领奖: 成功' + success + ' 失败' + fail, 1)
 }
 
 function cmdQuestReset(user) {
