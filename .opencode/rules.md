@@ -9,6 +9,7 @@
 - Frida 文件部署位置：宿主机 `/data/data/frida/`，容器内对应 `/data/frida/`
 - 游戏日志：`/data/log/siroco11/`、`/data/log/siroco52/`
 - Frida 日志：`/data/data/frida/plugin.log`
+- 道具名列表：`/data/frida/item_name_list.txt`（容器内路径），格式 `ID----名称`，`//finditem` 依赖此文件
 - 重启容器：`ssh aliyun "docker restart dnf"`
 - 容器内执行命令：`ssh aliyun "docker exec dnf <cmd>"`
 - 进程管理页面：`http://39.105.29.15:2000`（supervisor）

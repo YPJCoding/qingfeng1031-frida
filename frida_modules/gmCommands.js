@@ -39,15 +39,15 @@ let g_itemNameList = null
 function ensureItemNameListLoaded() {
   if (g_itemNameList) return
   try {
-    const f = new File('/dp2/frida/pvf_files.lst', 'r')
+    const f = new File('/data/frida/item_name_list.txt', 'r')
     g_itemNameList = []
     let count = 0
     while (count < 50000) {
       const line = f.readLine()
       if (!line) break
-      const p = line.indexOf(' ')
+      const p = line.indexOf('----')
       if (p < 0) continue
-      g_itemNameList.push({ id: line.slice(0, p), name: line.slice(p + 1) })
+      g_itemNameList.push({ id: line.slice(0, p), name: line.slice(p + 4) })
       count++
     }
     f.close()
