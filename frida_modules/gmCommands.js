@@ -68,7 +68,7 @@ function startHellParty() {
 
 function cmdMove(user, args) {
   if (args.length < 4) {
-    apiCUserSendNotiPacketMessage(user, '格式: //move village area x y', 6)
+    apiCUserSendNotiPacketMessage(user, '格式: //move village area x y', 2)
     return
   }
   const village = parseInt(args[0], 10)
@@ -76,62 +76,62 @@ function cmdMove(user, args) {
   const x = parseInt(args[2], 10)
   const y = parseInt(args[3], 10)
   gameWorldMoveArea(gGameWorld(), user, village, area, x, y, 0, 0, 0, 0, 0)
-  apiCUserSendNotiPacketMessage(user, '移动成功', 6)
+  apiCUserSendNotiPacketMessage(user, '移动成功', 1)
 }
 
 function cmdCoin(user, args) {
   if (args.length < 1) {
-    apiCUserSendNotiPacketMessage(user, '格式: //coin 数量 [1,10000000]', 6)
+    apiCUserSendNotiPacketMessage(user, '格式: //coin 数量 [1,10000000]', 2)
     return
   }
   const amount = parseInt(args[0], 10)
   if (amount < 1 || amount > 10000000) {
-    apiCUserSendNotiPacketMessage(user, '金币数量范围为 [1, 10000000]', 6)
+    apiCUserSendNotiPacketMessage(user, '金币数量范围为 [1, 10000000]', 2)
     return
   }
   const inven = cUserCharacInfoGetCurCharacInvenW(user)
   cInventoryGainMoney(inven, amount, 0, 0, 0)
   cUserSendUpdateItemList(user, 1, 0, 0)
-  apiCUserSendNotiPacketMessage(user, '已获得金币: ' + amount, 6)
+  apiCUserSendNotiPacketMessage(user, '已获得金币: ' + amount, 1)
 }
 
 function cmdCash(user, args) {
   if (args.length < 1) {
-    apiCUserSendNotiPacketMessage(user, '格式: //cash 数量 [1,100000]', 6)
+    apiCUserSendNotiPacketMessage(user, '格式: //cash 数量 [1,100000]', 2)
     return
   }
   const amount = parseInt(args[0], 10)
   if (amount < 1 || amount > 100000) {
-    apiCUserSendNotiPacketMessage(user, '点券数量范围为 [1, 100000]', 6)
+    apiCUserSendNotiPacketMessage(user, '点券数量范围为 [1, 100000]', 2)
     return
   }
   apiRechargeCashCera(user, amount)
-  apiCUserSendNotiPacketMessage(user, '已获得点券: ' + amount, 6)
+  apiCUserSendNotiPacketMessage(user, '已获得点券: ' + amount, 1)
 }
 
 function cmdItem(user, args) {
   if (args.length < 2) {
-    apiCUserSendNotiPacketMessage(user, '格式: //it id 数量', 6)
+    apiCUserSendNotiPacketMessage(user, '格式: //it id 数量', 2)
     return
   }
   const id = parseInt(args[0], 10)
   const count = parseInt(args[1], 10)
   if (count <= 0) {
-    apiCUserSendNotiPacketMessage(user, '数量必须大于0', 6)
+    apiCUserSendNotiPacketMessage(user, '数量必须大于0', 2)
     return
   }
   cUserAddItem(user, id, count, 6, ptr(0), 0)
-  apiCUserSendNotiPacketMessage(user, '已获得物品 ID=' + id + ' 数量=' + count, 6)
+  apiCUserSendNotiPacketMessage(user, '已获得物品 ID=' + id + ' 数量=' + count, 1)
 }
 
 function cmdFindItem(user, args) {
   if (args.length < 1) {
-    apiCUserSendNotiPacketMessage(user, '格式: //fi 物品名称', 6)
+    apiCUserSendNotiPacketMessage(user, '格式: //fi 物品名称', 2)
     return
   }
   ensureItemNameListLoaded()
   if (!g_itemNameList || g_itemNameList.length === 0) {
-    apiCUserSendNotiPacketMessage(user, '道具查找功能不可用', 6)
+    apiCUserSendNotiPacketMessage(user, '道具查找功能不可用', 2)
     return
   }
   const keyword = args.join(' ').toLowerCase()
@@ -143,25 +143,25 @@ function cmdFindItem(user, args) {
     }
   }
   if (matches.length === 0) {
-    apiCUserSendNotiPacketMessage(user, '未找到匹配物品: ' + keyword, 6)
+    apiCUserSendNotiPacketMessage(user, '未找到匹配物品: ' + keyword, 2)
     return
   }
   for (let i = 0; i < matches.length; i++) {
-    apiCUserSendNotiPacketMessage(user, 'ID=' + matches[i].id + ' ' + matches[i].name, 6)
+    apiCUserSendNotiPacketMessage(user, 'ID=' + matches[i].id + ' ' + matches[i].name, 1)
   }
   if (matches.length >= 20) {
-    apiCUserSendNotiPacketMessage(user, '结果过多，只显示前20条', 6)
+    apiCUserSendNotiPacketMessage(user, '结果过多，只显示前20条', 1)
   }
 }
 
 function cmdItemName(user, args) {
   if (args.length < 1) {
-    apiCUserSendNotiPacketMessage(user, '格式: //in 物品名称 [数量]', 6)
+    apiCUserSendNotiPacketMessage(user, '格式: //in 物品名称 [数量]', 2)
     return
   }
   ensureItemNameListLoaded()
   if (!g_itemNameList || g_itemNameList.length === 0) {
-    apiCUserSendNotiPacketMessage(user, '道具查找功能不可用', 6)
+    apiCUserSendNotiPacketMessage(user, '道具查找功能不可用', 2)
     return
   }
   const countArg = args.length >= 2 ? parseInt(args[args.length - 1], 10) : 1
@@ -175,21 +175,21 @@ function cmdItemName(user, args) {
     }
   }
   if (matches.length === 0) {
-    apiCUserSendNotiPacketMessage(user, '未找到匹配物品: ' + name, 6)
+    apiCUserSendNotiPacketMessage(user, '未找到匹配物品: ' + name, 2)
     return
   }
   if (matches.length > 1) {
     for (let i = 0; i < Math.min(matches.length, 10); i++) {
-      apiCUserSendNotiPacketMessage(user, 'ID=' + matches[i].id + ' ' + matches[i].name, 6)
-    }
-    if (matches.length > 10) {
-      apiCUserSendNotiPacketMessage(user, '匹配过多，只显示前10条，请使用精确名称', 6)
+      apiCUserSendNotiPacketMessage(user, 'ID=' + matches[i].id + ' ' + matches[i].name, 1)
+      }
+      if (matches.length > 10) {
+        apiCUserSendNotiPacketMessage(user, '匹配过多，只显示前10条，请使用精确名称', 1)
     }
     return
   }
   const count = hasCount ? countArg : 1
   cUserAddItem(user, parseInt(matches[0].id, 10), count, 6, ptr(0), 0)
-  apiCUserSendNotiPacketMessage(user, '已获得物品 ID=' + matches[0].id + ' ' + matches[0].name + ' 数量=' + count, 6)
+  apiCUserSendNotiPacketMessage(user, '已获得物品 ID=' + matches[0].id + ' ' + matches[0].name + ' 数量=' + count, 1)
 }
 
 function cmdRepair(user) {
@@ -219,21 +219,21 @@ function cmdRepair(user) {
       }
     }
   }
-  apiCUserSendNotiPacketMessage(user, '装备已修复', 6)
+  apiCUserSendNotiPacketMessage(user, '装备已修复', 1)
 }
 
 function cmdLevel(user, args) {
   if (args.length < 1) {
-    apiCUserSendNotiPacketMessage(user, '格式: //lv 等级', 6)
+    apiCUserSendNotiPacketMessage(user, '格式: //lv 等级', 2)
     return
   }
   const level = parseInt(args[0], 10)
   if (level < 1 || level > 70) {
-    apiCUserSendNotiPacketMessage(user, '等级范围为 [1, 70]', 6)
+    apiCUserSendNotiPacketMessage(user, '等级范围为 [1, 70]', 2)
     return
   }
   debugCommandSetLevel(ptr(0), user, level)
-  apiCUserSendNotiPacketMessage(user, '角色等级已设置为: ' + level, 6)
+  apiCUserSendNotiPacketMessage(user, '角色等级已设置为: ' + level, 1)
 }
 
 function cmdQuestFinish(user) {
@@ -249,7 +249,7 @@ function cmdQuestFinish(user) {
   userQuestGetQuestInfo(userQuest, packetGuard)
   cUserSend(user, packetGuard)
   destroyPacketGuardPacketGuard(packetGuard)
-  apiCUserSendNotiPacketMessage(user, '任务完成处理完毕', 6)
+  apiCUserSendNotiPacketMessage(user, '任务完成处理完毕', 1)
 }
 
 function cmdQuestClear(user) {
@@ -265,12 +265,12 @@ function cmdQuestClear(user) {
   userQuestGetQuestInfo(userQuest, packetGuard)
   cUserSend(user, packetGuard)
   destroyPacketGuardPacketGuard(packetGuard)
-  apiCUserSendNotiPacketMessage(user, '任务完成并领取奖励完毕', 6)
+  apiCUserSendNotiPacketMessage(user, '任务完成并领取奖励完毕', 1)
 }
 
 function cmdQuestReset(user) {
   userQuestReset(user)
-  apiCUserSendNotiPacketMessage(user, '所有任务已重置', 6)
+  apiCUserSendNotiPacketMessage(user, '所有任务已重置', 1)
 }
 
 function cmdQuestAll(user) {
@@ -284,17 +284,17 @@ function cmdQuestAll(user) {
     try { apiForceClearQuest(user, questId) } catch (e) {}
   }
   cUserSendClearQuestList(user)
-  apiCUserSendNotiPacketMessage(user, '当前等级所有主线任务已完成', 6)
+  apiCUserSendNotiPacketMessage(user, '当前等级所有主线任务已完成', 1)
 }
 
 function cmdHellToggle(user, on) {
   heffPartyTag = on ? 1 : 0
-  apiCUserSendNotiPacketMessage(user, on ? '深渊模式已开启' : '深渊模式已关闭', 6)
+  apiCUserSendNotiPacketMessage(user, on ? '深渊模式已开启' : '深渊模式已关闭', 1)
 }
 
 function cmdHelp(user) {
   for (let i = 0; i < COMMANDS.length; i++) {
-    apiCUserSendNotiPacketMessage(user, COMMANDS[i].cmd + ' - ' + COMMANDS[i].desc, 6)
+    apiCUserSendNotiPacketMessage(user, COMMANDS[i].cmd + ' - ' + COMMANDS[i].desc, 1)
   }
 }
 
@@ -302,7 +302,7 @@ function cmdHelp(user) {
 // ============================================================================
 
 const CMD_MAP = {
-  'test': function (user) { apiCUserSendNotiPacketMessage(user, 'GM测试成功', 6) },
+  'test': function (user) { apiCUserSendNotiPacketMessage(user, 'GM测试成功', 1) },
   'move': cmdMove,
   'mv': cmdMove,
   'coin': cmdCoin,
@@ -337,13 +337,13 @@ function routeGmCommand(user, rawMsg) {
   const args = spaceIdx < 0 ? [] : rawMsg.slice(spaceIdx + 1).split(' ').filter(function (a) { return a.length > 0 })
   const handler = CMD_MAP[cmdName]
   if (!handler) {
-    apiCUserSendNotiPacketMessage(user, '未知命令: //' + cmdName + ', 输入 //help 查看帮助', 6)
+    apiCUserSendNotiPacketMessage(user, '未知命令: //' + cmdName + ', 输入 //help 查看帮助', 2)
     return
   }
   try {
     handler(user, args)
   } catch (e) {
-    apiCUserSendNotiPacketMessage(user, '命令执行失败: ' + cmdName, 6)
+    apiCUserSendNotiPacketMessage(user, '命令执行失败: ' + cmdName, 2)
     bootLog('[GM-ERROR] cmd=' + cmdName + ' error=' + e)
   }
 }
