@@ -39,7 +39,7 @@ let g_itemNameList = null
 function ensureItemNameListLoaded() {
   if (g_itemNameList) return
   try {
-    const f = new File('/data/frida/item_name_list.txt', 'r')
+    const f = new File('/data/frida/data/item_name_list.txt', 'r')
     g_itemNameList = []
     let count = 0
     while (count < 50000) {

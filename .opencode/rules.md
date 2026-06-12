@@ -9,7 +9,7 @@
 - Frida 文件部署位置：宿主机 `/data/data/frida/`，容器内对应 `/data/frida/`
 - 游戏日志：`/data/log/siroco11/`、`/data/log/siroco52/`
 - Frida 日志：`/data/data/frida/plugin.log`
-- 道具名列表：`/data/frida/item_name_list.txt`（容器内路径），格式 `ID----名称`，`//finditem` 依赖此文件
+- 道具名列表：`data/item_name_list.txt`（本地），`/data/frida/data/item_name_list.txt`（容器内），格式 `ID----名称`
 - 重启容器：`ssh aliyun "docker restart dnf"`
 - 容器内执行命令：`ssh aliyun "docker exec dnf <cmd>"`
 - 进程管理页面：`http://39.105.29.15:2000`（supervisor）
@@ -19,6 +19,7 @@
 ## 行为约束
 - **提交不改动**（`git commit` 只提交，不 push）
 - **禁止自动部署**：没有用户明确指令时，不得执行 `bash deploy.sh` 或 `docker restart`
+- **询问不修改**：用户提问/咨询时只分析解答，不改代码。解释完后询问是否要实施。用户明确说"改"/"修"/"实现"/"开始"等指令词时才动手
 
 ## 运行时
 - **纯 Frida JS**，注入到 df_game_r 游戏进程
