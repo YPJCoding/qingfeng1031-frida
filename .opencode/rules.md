@@ -3,12 +3,21 @@
 ## 服务器环境
 - SSH：`ssh aliyun` → `root@39.105.29.15:22`，密钥 `~/.ssh/39.105.29.15_ed25519`
 - 游戏运行在 Docker 容器 `dnf` 内（镜像 `registry.cn-hangzhou.aliyuncs.com/1995chen/dnf:centos7-2.1.9.fix1`）
+- 开源仓库：[1995chen/dnf](https://github.com/1995chen/dnf) — 容器化 DNF 私服，已内置 DP2
 - 两个频道：`siroco11`、`siroco52`
-- 宿主机路径 → 容器内路径：`/data/data` → `/data`（volume mount）
+- Volume 映射：`/data/data`→`/data`，`/data/log`→`/home/neople/game/log`，`/data/mysql`→`/var/lib/mysql`
 - Frida 文件部署位置：宿主机 `/data/data/frida/`，容器内对应 `/data/frida/`
-- 日志：`/data/data/frida/plugin.log`
+- 游戏日志：`/data/log/siroco11/`、`/data/log/siroco52/`
+- Frida 日志：`/data/data/frida/plugin.log`
 - 重启容器：`ssh aliyun "docker restart dnf"`
 - 容器内执行命令：`ssh aliyun "docker exec dnf <cmd>"`
+- 进程管理页面：`http://39.105.29.15:2000`（supervisor）
+- 数据库：root/88888888，外网端口 3000，game 用户 uu5!^%jg
+- shm-size 需 8g，内存不足会导致五国失败或 Init DataManager 循环
+
+## 行为约束
+- **提交不改动**（`git commit` 只提交，不 push）
+- **禁止自动部署**：没有用户明确指令时，不得执行 `bash deploy.sh` 或 `docker restart`
 
 ## 运行时
 - **纯 Frida JS**，注入到 df_game_r 游戏进程
