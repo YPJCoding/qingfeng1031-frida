@@ -156,17 +156,12 @@ function onStartEventVillageAttack() {
 
 //开启怪物攻城活动定时器
 function startEventVillageAttackTimer() {
-  //获取当前系统时间
-  const curTime = apiCSystemTimeGetCurSec()
   //计算距离下次开启怪物攻城活动的时间
   // let delayTime = 3600 * eventVillageAttackStartHour - (curTime % (3600 * 24))
   // if (delayTime <= 0) delayTime += 3600 * 24
-  let delayTime = 10 // TEMP: 测试用，10秒后触发
-  bootLog('[INFO] -------------------- <countdown time>:' + delayTime)
-  //log('距离下次开启<怪物攻城活动>还有:' + delay_time / 3600 + '小时')
-  //log('距离下次开启<怪物攻城活动>还有:' + delay_time * 1000)
-  //定时开启活动
-  apiScheduleOnMainThreadDelay(onStartEventVillageAttack, null, delayTime * 1000)
+  bootLog('[INFO] -------------------- 怪物攻城: 立即触发 (跳过setTimeout)')
+  // 直接用 TimerDispatcher 队列立即触发，不用 setTimeout（dispose后会失效）
+  apiScheduleOnMainThread(onStartEventVillageAttack, null)
 }
 
 //开启怪物攻城活动
