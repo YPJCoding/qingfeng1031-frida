@@ -238,29 +238,33 @@ function cmdLevel(user, args) {
 
 function cmdQuestFinish(user) {
   const userQuest = cUserGetCurCharacQuestW(user)
-  const questList = userQuest.add(8)
-  const questCount = questList.readInt()
-  const questData = questList.add(4)
-  for (let i = 0; i < questCount; i++) {
-    const questId = questData.add(i * 4).readInt()
+  for (let i = 0; i < 20; i++) {
+    const questId = userQuest.add(4 * (i + 7500 + 2)).readInt()
     if (questId > 0) {
       try { clearDoingQuestEx(user, questId) } catch (e) {}
     }
   }
+  cUserSendClearQuestList(user)
+  const packetGuard = apiPacketGuardPacketGuard()
+  userQuestGetQuestInfo(userQuest, packetGuard)
+  cUserSend(user, packetGuard)
+  destroyPacketGuardPacketGuard(packetGuard)
   apiCUserSendNotiPacketMessage(user, '任务完成处理完毕', 6)
 }
 
 function cmdQuestClear(user) {
   const userQuest = cUserGetCurCharacQuestW(user)
-  const questList = userQuest.add(8)
-  const questCount = questList.readInt()
-  const questData = questList.add(4)
-  for (let i = 0; i < questCount; i++) {
-    const questId = questData.add(i * 4).readInt()
+  for (let i = 0; i < 20; i++) {
+    const questId = userQuest.add(4 * (i + 7500 + 2)).readInt()
     if (questId > 0) {
       try { apiForceClearQuest(user, questId) } catch (e) {}
     }
   }
+  cUserSendClearQuestList(user)
+  const packetGuard = apiPacketGuardPacketGuard()
+  userQuestGetQuestInfo(userQuest, packetGuard)
+  cUserSend(user, packetGuard)
+  destroyPacketGuardPacketGuard(packetGuard)
   apiCUserSendNotiPacketMessage(user, '任务完成并领取奖励完毕', 6)
 }
 
@@ -350,12 +354,10 @@ function routeGmCommand(user, rawMsg) {
 function installGmCommands() {
   startHellParty()
 
-  Interceptor.attach(ptr(0x820BBDE), {
+  Interceptor.attach(ptr(0x0820BA90), {
     onEnter(args) {
       const user = args[1]
-      const rawPacketBuf = apiPacketBufGetBuf(args[2])
-      const msgLen = rawPacketBuf.readInt()
-      let msg = rawPacketBuf.add(4).readUtf8String(msgLen)
+      let msg = args[2].readUtf8String()
       msg = msg.slice(2)
       bootLog('[GM-COMMAND] user=' + apiCUserCharacInfoGetCurCharacName(user) + ' msg=' + msg)
       routeGmCommand(user, msg)
