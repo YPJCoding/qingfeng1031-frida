@@ -22,7 +22,13 @@ const COMMANDS = [
   { cmd: '//onhell/onh', desc: '开启深渊模式' },
   { cmd: '//offhell/ofh', desc: '关闭深渊模式' },
   { cmd: '//lv {level}', desc: '角色到指定等级' },
-  { cmd: '//help/h', desc: '显示帮助信息' }
+  { cmd: '//help/h', desc: '显示帮助信息' },
+  { cmd: '//decompose/dc', desc: '批量分解背包装备' },
+  { cmd: '//inherit/ih', desc: '装备继承(背包第1格→身上同类型)' },
+  { cmd: '//dimreset/dr {index}', desc: '重置异界次数(0-5)' },
+  { cmd: '//clearmail/cm', desc: '清空角色邮件' },
+  { cmd: '//clearavatar/ca', desc: '清空时装栏' },
+  { cmd: '//clearcreature/cc', desc: '清空宠物栏' }
 ]
 
 // 道具名称列表
@@ -305,6 +311,161 @@ function cmdHelp(user) {
   }
 }
 
+function cmdDecompose(user) {
+  var index = 0
+  var checkTag = cUserCharacInfoGetCurCharacExpertJob(user)
+  if (checkTag == 0) {
+    apiCUserSendNotiPacketMessage(user, '注意： 副职业没有开启！', 1)
+    return
+  }
+  var inven = cUserCharacInfoGetCurCharacInvenW(user)
+  for (var i = 9; i <= 24; i++) {
+    var equ = cInventoryGetInvenRef(inven, 1, i)
+    if (invenItemGetKey(equ)) {
+      cDisJointItem(user, i, 0, 239, user, 0xFFFF)
+      equ = cInventoryGetInvenRef(inven, 1, i)
+      if (invenItemGetKey(equ)) {
+        // 失败
+      } else {
+        index++
+        cUserSendUpdateItemList(user, 1, 0, i)
+      }
+    }
+  }
+  if (index > 0) {
+    apiCUserSendNotiPacketMessage(user, '恭喜： ' + index + '件装备分解 成功！', 0)
+  } else {
+    apiCUserSendNotiPacketMessage(user, '注意： 装备分解 失败！', 0)
+  }
+}
+
+function cmdInherit(user) {
+  var inven = cUserCharacInfoGetCurCharacInvenW(user)
+  var equ = cInventoryGetInvenRef(inven, 1, 9)
+  var itemId = invenItemGetKey(equ)
+  if (invenItemGetKey(equ)) {
+    var upgrade_level = equ.add(6).readU8()
+    var itemData = cDataManagerFindItem(gCDataManager(), itemId)
+    var equ_type = itemData.add(141 * 4).readU32()
+    var sub_type = cEquipItemGetSubType(itemData)
+    var equRarity = cItemGetRarity(itemData)
+    var needLevel = cItemGetUsableLevel(itemData)
+    bootLog('equ_type :' + equ_type)
+    bootLog('sub_type :' + sub_type)
+    var useJob = ''
+    for (var i = 60; i <= 70; i++) {
+      useJob += itemData.add(i).readU8()
+    }
+    bootLog(equ_type + '  ' + useJob)
+    if (equRarity < 3) {
+      apiCUserSendNotiPacketMessage(user, '继承失败：装备品级必须要求粉色以上，继承装备不满足要求', 0)
+      return
+    }
+    if (needLevel < 55) {
+      apiCUserSendNotiPacketMessage(user, '继承失败：装备等级要大于等于55级以上，继承装备不满足要求(' + needLevel + ')', 0)
+      return
+    }
+    var successTag = false
+    for (var i = 10; i <= 21; i++) {
+      var equIn = cInventoryGetInvenRef(inven, 0, i)
+      if (invenItemGetKey(equIn)) {
+        var inItemId = invenItemGetKey(equIn)
+        var inItemData = cDataManagerFindItem(gCDataManager(), inItemId)
+        var inEqu_type = inItemData.add(141 * 4).readU32()
+        var inEquRarity = cItemGetRarity(inItemData)
+        var inNeedLevel = cItemGetUsableLevel(inItemData)
+        bootLog('equ_type a：' + equ_type + ',' + inEqu_type + ',' + inItemData.add(148).readU8())
+        if (inEqu_type == equ_type) {
+          if (inEqu_type == 10) {
+            var useJob = ''
+            var inUseJob = ''
+            for (var i = 60; i <= 70; i++) {
+              useJob += itemData.add(i).readU8()
+              inUseJob += inItemData.add(i).readU8()
+            }
+            if (useJob != inUseJob) {
+              apiCUserSendNotiPacketMessage(user, '继承失败：武器装备需要当前职业且同类型，穿戴装备不满足要求', 0)
+              return
+            }
+            var inSubType = cEquipItemGetSubType(inItemData)
+            if (sub_type != inSubType) {
+              apiCUserSendNotiPacketMessage(user, '继承失败：武器装备需要当前职业且同类型，穿戴装备不满足要求', 0)
+              return
+            }
+          }
+          if (inEquRarity < 3) {
+            apiCUserSendNotiPacketMessage(user, '继承失败：装备品级必须要求粉色以上，穿戴装备不满足要求', 0)
+            return
+          }
+          if (inNeedLevel < 55) {
+            apiCUserSendNotiPacketMessage(user, '继承失败：装备等级要大于等于55级以上，穿戴装备不满足要求', 0)
+            return
+          }
+          var inUpgrade_level = equIn.add(6).readU8()
+          var zengfu = equ.add(17).readU16()
+          var duanzao = equ.add(51).readU8()
+          var baozhu = equ.add(13).readU32()
+          if (inUpgrade_level <= upgrade_level) {
+            equIn.add(6).writeU8(upgrade_level)
+            equIn.add(17).writeU16(zengfu)
+            equIn.add(51).writeU8(duanzao)
+            equIn.add(13).writeU32(baozhu)
+            equ.add(6).writeU8(0)
+            equ.add(17).writeU16(0)
+            equ.add(51).writeU8(0)
+            equ.add(13).writeU32(0)
+            cUserSendUpdateItemList(user, 1, 3, i)
+            cUserSendUpdateItemList(user, 1, 0, 9)
+            successTag = true
+            bootLog('success！！！')
+            apiCUserSendNotiPacketMessage(user, '继承成功！！！', 0)
+          }
+          break
+        }
+      }
+    }
+    if (!successTag) {
+      apiCUserSendNotiPacketMessage(user, '继承失败：没有合适的装备', 0)
+    }
+  }
+}
+
+function cmdDimReset(user, args) {
+  if (args.length < 1) {
+    apiCUserSendNotiPacketMessage(user, '格式: //dr 异界次数索引(0-5)', 2)
+    return
+  }
+  var index = parseInt(args[0], 10)
+  var dimensionInout = cDataManagerGetDimensionInout(gCDataManager(), index)
+  cUserCharacInfoSetDemensionInoutValue(user, index, dimensionInout)
+  apiCUserSendNotiPacketMessage(user, '异界次数已重置: ' + index, 1)
+}
+
+function cmdClearMail(user) {
+  var charac_no = cUserCharacInfoGetCurCharacNo(user)
+  apiMySQLExec(mySQLTaiwanCain2nd, 'delete from letter where charac_no=' + charac_no + ';')
+  apiMySQLExec(mySQLTaiwanCain2nd, 'delete from postal where receive_charac_no=' + charac_no + ';')
+  apiCUserSendNotiPacketMessage(user, '角色邮件已清空', 1)
+}
+
+function cmdClearAvatar(user) {
+  var inven = cUserCharacInfoGetCurCharacInvenW(user)
+  for (var i = 0; i <= 13; i++) {
+    cInventoryDeleteItem(inven, 2, i, 1, 6, 1)
+  }
+  cUserSendItemspace(user, 1)
+  apiCUserSendNotiPacketMessage(user, '时装栏已清空', 1)
+}
+
+function cmdClearCreature(user) {
+  var inven = cUserCharacInfoGetCurCharacInvenW(user)
+  for (var i = 0; i <= 13; i++) {
+    cInventoryDeleteItem(inven, 3, i, 1, 6, 1)
+  }
+  cUserSendItemspace(user, 7)
+  apiCUserSendNotiPacketMessage(user, '宠物栏已清空', 1)
+}
+
 // 命令路由
 // ============================================================================
 
@@ -335,7 +496,19 @@ const CMD_MAP = {
   'ofh': function (user) { cmdHellToggle(user, false) },
   'lv': cmdLevel,
   'help': cmdHelp,
-  'h': cmdHelp
+  'h': cmdHelp,
+  'decompose': cmdDecompose,
+  'dc': cmdDecompose,
+  'inherit': cmdInherit,
+  'ih': cmdInherit,
+  'dimreset': cmdDimReset,
+  'dr': cmdDimReset,
+  'clearmail': cmdClearMail,
+  'cm': cmdClearMail,
+  'clearavatar': cmdClearAvatar,
+  'ca': cmdClearAvatar,
+  'clearcreature': cmdClearCreature,
+  'cc': cmdClearCreature
 }
 
 function routeGmCommand(user, rawMsg) {

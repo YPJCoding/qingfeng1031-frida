@@ -41,7 +41,8 @@ const pluginFeatureSwitch = {
   gmBypass: true,
   // 自定义GM命令：//move //coin //lv //repair 等15条命令。
   gmCommands: true,
-  dungeonPatch: true
+  dungeonPatch: true,
+  utilityPatches: true
 }
 // ============================================================================
 // 02. 运行配置区

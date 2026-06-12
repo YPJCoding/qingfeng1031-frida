@@ -62,6 +62,9 @@ function installCoreServices() {
   installPluginFeature('副本解锁 + 赛利亚互通', pluginFeatureSwitch.dungeonPatch, function () {
     installDungeonPatch()
   })
+  installPluginFeature('辅助补丁', pluginFeatureSwitch.utilityPatches, function () {
+    installUtilityPatches()
+  })
   installPluginFeature('初始化数据库', pluginFeatureSwitch.database, function () {
     apiScheduleOnMainThread(initDb, null)
   })

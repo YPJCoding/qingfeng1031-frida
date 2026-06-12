@@ -369,6 +369,11 @@ const cEquipItemGetEndurance = new NativeFunction(ptr(0x0811ED98), 'int', ['poin
 const userQuestReset = new NativeFunction(ptr(0x86AB894), 'int', ['pointer'], { abi: 'sysv' })
 const doUserDefineCommand = new NativeFunction(ptr(0x0820BA90), 'int', ['pointer', 'int', 'pointer'], { abi: 'sysv' })
 const cUserSendItemspace = new NativeFunction(ptr(0x865DB6C), 'int', ['pointer', 'int'], { abi: 'sysv' })
+const cDisJointItem = new NativeFunction(ptr(0x81f92ca), 'int', ['pointer', 'int', 'int', 'int', 'pointer', 'int'], { abi: 'sysv' })
+const cEquipItemGetSubType = new NativeFunction(ptr(0x833eecc), 'int', ['pointer'], { abi: 'sysv' })
+const cDataManagerGetDimensionInout = new NativeFunction(ptr(0x0822b612), 'int', ['pointer', 'int'], { abi: 'sysv' })
+const cUserCharacInfoSetDemensionInoutValue = new NativeFunction(ptr(0x0822f184), 'int', ['pointer', 'int', 'int'], { abi: 'sysv' })
+const cUserCharacInfoGetCurCharacExpertJob = new NativeFunction(ptr(0x822f8d4), 'int', ['pointer'], { abi: 'sysv' })
 // ============================================================================
 
 if (!globalThis.dnfPlugin) {
@@ -401,6 +406,7 @@ __dnfExport({
   destroyPacketGuardPacketGuard, fopen, fread, fclose, cLuckPointGetItemRarity,
   cGmAccountsIsGM, cUserIsGMUser, gameWorldMoveArea, cInventoryGainMoney, cUserAddItem,
   debugCommandSetLevel, cEquipItemGetEndurance, userQuestReset, doUserDefineCommand,
-  cUserSendItemspace
+  cUserSendItemspace, cDisJointItem, cEquipItemGetSubType, cDataManagerGetDimensionInout,
+  cUserCharacInfoSetDemensionInoutValue, cUserCharacInfoGetCurCharacExpertJob
 })
 
