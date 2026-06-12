@@ -352,7 +352,7 @@ function routeGmCommand(user, rawMsg) {
 // ============================================================================
 
 function installGmCommands() {
-  startHellParty()
+  try { startHellParty() } catch (e) {}
 
   Interceptor.attach(ptr(0x0820BA90), {
     onEnter(args) {
