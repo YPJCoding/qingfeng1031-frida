@@ -360,6 +360,13 @@ const cLuckPointGetItemRarity = new NativeFunction(ptr(0x8550BE4), 'int', ['poin
 //GM权限检查
 const cGmAccountsIsGM = new NativeFunction(ptr(0x08109346), 'int', ['pointer', 'int'], { abi: 'sysv' })
 const cUserIsGMUser = new NativeFunction(ptr(0x0814589c), 'int', ['pointer'], { abi: 'sysv' })
+//GM命令支持
+const gameWorldMoveArea = new NativeFunction(ptr(0x86C5A84), 'pointer', ['pointer', 'pointer', 'int', 'int', 'int', 'int', 'int', 'int', 'int', 'int', 'int'], { abi: 'sysv' })
+const cInventoryGainMoney = new NativeFunction(ptr(0x84FF29C), 'int', ['pointer', 'int', 'int', 'int', 'int'], { abi: 'sysv' })
+const cUserAddItem = new NativeFunction(ptr(0x867B6D4), 'int', ['pointer', 'int', 'int', 'int', 'pointer', 'int'], { abi: 'sysv' })
+const debugCommandSetLevel = new NativeFunction(ptr(0x0858EFDE), 'int', ['pointer', 'pointer', 'int'], { abi: 'sysv' })
+const cEquipItemGetEndurance = new NativeFunction(ptr(0x0811ED98), 'int', ['pointer'], { abi: 'sysv' })
+const userQuestReset = new NativeFunction(ptr(0x86AB894), 'int', ['pointer'], { abi: 'sysv' })
 // ============================================================================
 
 if (!globalThis.dnfPlugin) {
@@ -390,6 +397,7 @@ __dnfExport({
   interfacePacketBufPutHeader, interfacePacketBufPutByte, interfacePacketBufPutShort,
   interfacePacketBufPutInt, interfacePacketBufPutBinary, interfacePacketBufFinalize,
   destroyPacketGuardPacketGuard, fopen, fread, fclose, cLuckPointGetItemRarity,
-  cGmAccountsIsGM, cUserIsGMUser
+  cGmAccountsIsGM, cUserIsGMUser, gameWorldMoveArea, cInventoryGainMoney, cUserAddItem,
+  debugCommandSetLevel, cEquipItemGetEndurance, userQuestReset
 })
 

@@ -38,7 +38,9 @@ const pluginFeatureSwitch = {
   // 爆率控制：修改装备掉落品级倍率。
   dropRate: true,
   // GM权限绕过：Hook权限检查，使所有角色可使用 // 命令。
-  gmBypass: true
+  gmBypass: true,
+  // 自定义GM命令：//move //coin //lv //repair 等15条命令。
+  gmCommands: true
 }
 // ============================================================================
 // 02. 运行配置区

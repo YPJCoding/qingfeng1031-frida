@@ -33,6 +33,7 @@ const modulePathConfig = {
     ['ranking', 'ranking.js'],
     ['dropRate', 'dropRate.js'],
     ['gmBypass', 'gmBypass.js'],
+    ['gmCommands', 'gmCommands.js'],
     ['userWorld', 'userWorld.js'],
     ['returnUser', 'returnUser.js'],
     ['hiddenOption', 'hiddenOption.js'],

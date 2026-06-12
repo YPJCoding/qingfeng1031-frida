@@ -56,6 +56,9 @@ function installCoreServices() {
   installPluginFeature('GM权限绕过', pluginFeatureSwitch.gmBypass, function () {
     installGmBypass()
   })
+  installPluginFeature('自定义GM命令', pluginFeatureSwitch.gmCommands, function () {
+    installGmCommands()
+  })
   installPluginFeature('初始化数据库', pluginFeatureSwitch.database, function () {
     apiScheduleOnMainThread(initDb, null)
   })
