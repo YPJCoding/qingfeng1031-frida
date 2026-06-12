@@ -6,7 +6,7 @@ TARGET="/data/data/frida"
 
 echo "=== 同步源码到 ${HOST}:${TARGET} ==="
 
-scp frida.js frida_config.json frida.config "${HOST}:${TARGET}/"
+scp frida.js frida_config.json frida.config item_name_list.txt "${HOST}:${TARGET}/"
 scp frida_modules/*.js "${HOST}:${TARGET}/frida_modules/"
 
 echo "=== 清理 plugin.log ==="
