@@ -367,6 +367,8 @@ const cUserAddItem = new NativeFunction(ptr(0x867B6D4), 'int', ['pointer', 'int'
 const debugCommandSetLevel = new NativeFunction(ptr(0x0858EFDE), 'int', ['pointer', 'pointer', 'int'], { abi: 'sysv' })
 const cEquipItemGetEndurance = new NativeFunction(ptr(0x0811ED98), 'int', ['pointer'], { abi: 'sysv' })
 const userQuestReset = new NativeFunction(ptr(0x86AB894), 'int', ['pointer'], { abi: 'sysv' })
+const doUserDefineCommand = new NativeFunction(ptr(0x0820BA90), 'int', ['pointer', 'int', 'pointer'], { abi: 'sysv' })
+const cUserSendItemspace = new NativeFunction(ptr(0x865DB6C), 'int', ['pointer', 'int'], { abi: 'sysv' })
 // ============================================================================
 
 if (!globalThis.dnfPlugin) {
@@ -398,6 +400,7 @@ __dnfExport({
   interfacePacketBufPutInt, interfacePacketBufPutBinary, interfacePacketBufFinalize,
   destroyPacketGuardPacketGuard, fopen, fread, fclose, cLuckPointGetItemRarity,
   cGmAccountsIsGM, cUserIsGMUser, gameWorldMoveArea, cInventoryGainMoney, cUserAddItem,
-  debugCommandSetLevel, cEquipItemGetEndurance, userQuestReset
+  debugCommandSetLevel, cEquipItemGetEndurance, userQuestReset, doUserDefineCommand,
+  cUserSendItemspace
 })
 

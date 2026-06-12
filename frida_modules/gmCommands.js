@@ -197,28 +197,29 @@ function cmdRepair(user) {
   // 身上装备栏 10-21 (INVENTORY_TYPE_BODY = 0)
   for (let slot = 10; slot <= 21; slot++) {
     const item = cInventoryGetInvenRef(inven, 0, slot)
-    if (!item.isNull() && !invenItemIsEmpty(item)) {
-      const itemId = invenItemGetKey(item)
-      const itemData = cDataManagerFindItem(gCDataManager(), itemId)
-      if (!itemData.isNull()) {
-        const durabilityMax = cEquipItemGetEndurance(itemData)
-        item.add(11).writeU16(durabilityMax)
-        cUserSendUpdateItemList(user, 1, 0, slot)
-      }
+    if (item.isNull()) continue
+    const itemId = invenItemGetKey(item)
+    if (!itemId) continue
+    const itemData = cDataManagerFindItem(gCDataManager(), itemId)
+    if (!itemData.isNull()) {
+      const durabilityMax = cEquipItemGetEndurance(itemData)
+      item.add(11).writeU16(durabilityMax)
+      cUserSendUpdateItemList(user, 1, 3, slot)
     }
   }
   // 物品栏装备 3-8 (INVENTORY_TYPE_ITEM = 1)
   for (let slot = 3; slot <= 8; slot++) {
     const item = cInventoryGetInvenRef(inven, 1, slot)
-    if (!item.isNull() && !invenItemIsEmpty(item)) {
-      const itemId = invenItemGetKey(item)
-      const itemData = cDataManagerFindItem(gCDataManager(), itemId)
-      if (!itemData.isNull()) {
-        const durabilityMax = cEquipItemGetEndurance(itemData)
-        item.add(11).writeU16(durabilityMax)
-      }
+    if (item.isNull()) continue
+    const itemId = invenItemGetKey(item)
+    if (!itemId) continue
+    const itemData = cDataManagerFindItem(gCDataManager(), itemId)
+    if (!itemData.isNull()) {
+      const durabilityMax = cEquipItemGetEndurance(itemData)
+      item.add(11).writeU16(durabilityMax)
     }
   }
+  cUserSendItemspace(user, 0)
   apiCUserSendNotiPacketMessage(user, '装备已修复', 1)
 }
 

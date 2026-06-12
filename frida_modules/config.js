@@ -40,7 +40,8 @@ const pluginFeatureSwitch = {
   // GM权限绕过：Hook权限检查，使所有角色可使用 // 命令。
   gmBypass: true,
   // 自定义GM命令：//move //coin //lv //repair 等15条命令。
-  gmCommands: true
+  gmCommands: true,
+  dungeonPatch: true
 }
 // ============================================================================
 // 02. 运行配置区

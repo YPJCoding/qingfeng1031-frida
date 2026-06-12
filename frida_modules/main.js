@@ -59,6 +59,9 @@ function installCoreServices() {
   installPluginFeature('自定义GM命令', pluginFeatureSwitch.gmCommands, function () {
     installGmCommands()
   })
+  installPluginFeature('副本解锁 + 赛利亚互通', pluginFeatureSwitch.dungeonPatch, function () {
+    installDungeonPatch()
+  })
   installPluginFeature('初始化数据库', pluginFeatureSwitch.database, function () {
     apiScheduleOnMainThread(initDb, null)
   })

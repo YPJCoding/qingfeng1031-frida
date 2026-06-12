@@ -34,6 +34,7 @@ const modulePathConfig = {
     ['dropRate', 'dropRate.js'],
     ['gmBypass', 'gmBypass.js'],
     ['gmCommands', 'gmCommands.js'],
+    ['dungeonPatch', 'dungeonPatch.js'],
     ['userWorld', 'userWorld.js'],
     ['returnUser', 'returnUser.js'],
     ['hiddenOption', 'hiddenOption.js'],
