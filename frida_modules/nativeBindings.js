@@ -374,6 +374,12 @@ const cEquipItemGetSubType = new NativeFunction(ptr(0x833eecc), 'int', ['pointer
 const cDataManagerGetDimensionInout = new NativeFunction(ptr(0x0822b612), 'int', ['pointer', 'int'], { abi: 'sysv' })
 const cUserCharacInfoSetDemensionInoutValue = new NativeFunction(ptr(0x0822f184), 'int', ['pointer', 'int', 'int'], { abi: 'sysv' })
 const cUserCharacInfoGetCurCharacExpertJob = new NativeFunction(ptr(0x822f8d4), 'int', ['pointer'], { abi: 'sysv' })
+//跨界/转职
+const cUserGetAccountCargo = new NativeFunction(ptr(0x822fc22), 'pointer', ['pointer'], { abi: 'sysv' })
+const cAccountCargoGetEmptySlot = new NativeFunction(ptr(0x828a580), 'int', ['pointer'], { abi: 'sysv' })
+const cAccountCargoInsertItem = new NativeFunction(ptr(0x8289c82), 'int', ['pointer', 'pointer', 'int'], { abi: 'sysv' })
+const cAccountCargoSendItemList = new NativeFunction(ptr(0x828a88a), 'int', ['pointer'], { abi: 'sysv' })
+const cUserReturnToSelectCharacList = new NativeFunction(ptr(0x8686FEE), 'int', ['pointer', 'int'], { abi: 'sysv' })
 // ============================================================================
 
 if (!globalThis.dnfPlugin) {
@@ -407,6 +413,7 @@ __dnfExport({
   cGmAccountsIsGM, cUserIsGMUser, gameWorldMoveArea, cInventoryGainMoney, cUserAddItem,
   debugCommandSetLevel, cEquipItemGetEndurance, userQuestReset, doUserDefineCommand,
   cUserSendItemspace, cDisJointItem, cEquipItemGetSubType, cDataManagerGetDimensionInout,
-  cUserCharacInfoSetDemensionInoutValue, cUserCharacInfoGetCurCharacExpertJob
+  cUserCharacInfoSetDemensionInoutValue, cUserCharacInfoGetCurCharacExpertJob,
+  cUserGetAccountCargo, cAccountCargoGetEmptySlot, cAccountCargoInsertItem, cAccountCargoSendItemList, cUserReturnToSelectCharacList
 })
 

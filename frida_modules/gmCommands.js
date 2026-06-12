@@ -28,7 +28,9 @@ const COMMANDS = [
   { cmd: '//dimreset/dr {index}', desc: '重置异界次数(0-5)' },
   { cmd: '//clearmail/cm', desc: '清空角色邮件' },
   { cmd: '//clearavatar/ca', desc: '清空时装栏' },
-  { cmd: '//clearcreature/cc', desc: '清空宠物栏' }
+  { cmd: '//clearcreature/cc', desc: '清空宠物栏' },
+  { cmd: '//crossover/cs', desc: '跨界石(背包第1格→账号金库)' },
+  { cmd: '//job {job} {growtype} {level}', desc: '转职(job=职业ID growtype=成长类型 level=等级)' }
 ]
 
 // 道具名称列表
@@ -466,6 +468,47 @@ function cmdClearCreature(user) {
   apiCUserSendNotiPacketMessage(user, '宠物栏已清空', 1)
 }
 
+function cmdCrossover(user) {
+  var accountCargo = cUserGetAccountCargo(user)
+  bootLog('账号金库：' + accountCargo)
+  var emptyIndex = cAccountCargoGetEmptySlot(accountCargo)
+  bootLog('空格子的位置:' + emptyIndex)
+  if (emptyIndex == -1) {
+    apiCUserSendNotiPacketMessage(user, '跨界失败：账号金库没有空的格子！！！', 0)
+  }
+  var inven = cUserCharacInfoGetCurCharacInvenW(user)
+  var equ = cInventoryGetInvenRef(inven, 1, 9)
+  var itemId = invenItemGetKey(equ)
+  if (itemId) {
+    var tag = cAccountCargoInsertItem(accountCargo, equ, emptyIndex)
+    if (tag == -1) {
+      bootLog('fail!!!')
+      apiCUserSendNotiPacketMessage(user, '跨界失败：移入装备error', 0)
+    } else {
+      invenItemReset(equ)
+      cUserSendUpdateItemList(user, 1, 0, 9)
+      cAccountCargoSendItemList(accountCargo)
+      bootLog('success!!!')
+      apiCUserSendNotiPacketMessage(user, '跨界成功：已存入第 ' + (emptyIndex + 1) + ' 个格子！', 0)
+    }
+  }
+}
+
+function cmdJob(user, args) {
+  if (args.length < 3) {
+    apiCUserSendNotiPacketMessage(user, '格式: //job 职业ID 成长类型 等级', 2)
+    return
+  }
+  var newJob = parseInt(args[0], 10)
+  var newGrowtype = parseInt(args[1], 10)
+  var newLevel = parseInt(args[2], 10)
+  debugCommandSetLevel(ptr(0), user, newLevel)
+  var characNo = cUserCharacInfoGetCurCharacNo(user)
+  apiMySQLExec(mySQLTaiwanCain, 'update charac_info set job=' + newJob + ', grow_type=' + newGrowtype + ' where charac_no=' + characNo + ';')
+  apiScheduleOnMainThread(function () { cUserReturnToSelectCharacList(user, 1) }, null)
+  apiCUserSendNotiPacketMessage(user, '转职完成，请重新选择角色', 1)
+}
+
 // 命令路由
 // ============================================================================
 
@@ -508,7 +551,9 @@ const CMD_MAP = {
   'clearavatar': cmdClearAvatar,
   'ca': cmdClearAvatar,
   'clearcreature': cmdClearCreature,
-  'cc': cmdClearCreature
+  'cc': cmdClearCreature,
+  'crossover': cmdCrossover, 'cs': cmdCrossover,
+  'job': cmdJob
 }
 
 function routeGmCommand(user, rawMsg) {
