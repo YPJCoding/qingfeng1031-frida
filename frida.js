@@ -55,7 +55,6 @@ function bootLog(message) {
   const line = `[${bootNowText()}] ${message}`
   try {
     if (!bootLogFile) {
-      try { File.writeAllText(bootLogPath, '') } catch (e) {}
       bootLogFile = new File(bootLogPath, 'a+')
     }
     bootLogFile.write(line + '\n')
