@@ -83,6 +83,7 @@ let pendingEarlyStart = false
 let pluginStartCalled = false
 let initStage = null
 let initParameters = null
+let initAlreadyCalled = false
 
 function resolveModulePath(fileName) {
   return modulePathConfig.baseDir + '/' + fileName
@@ -224,6 +225,11 @@ function scheduleEarlyFallbackStart() {
 
 rpc.exports = {
   async init(stage, parameters) {
+    if (initAlreadyCalled) {
+      return 'init_skip_duplicate'
+    }
+    initAlreadyCalled = true
+
     initStage = stage
     initParameters = parameters
 
