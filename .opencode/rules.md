@@ -12,7 +12,7 @@
 - 重启容器：`ssh aliyun "docker restart dnf"`
 - 容器内执行命令：`ssh aliyun "docker exec dnf <cmd>"`
 - 进程管理页面：`http://39.105.29.15:2000`（supervisor）
-- 数据库：root/88888888，外网端口 3000，game 用户 uu5!^%jg
+- 数据库：game 用户 `uu5!^%jg`，其他凭据不记录，需用时询问
 - shm-size 需 8g，内存不足会导致五国失败或 Init DataManager 循环
 
 ## 行为约束
