@@ -125,6 +125,100 @@ let mySQLTaiwanCain = null
 let mySQLTaiwanCain2nd = null
 let mySQLTaiwanBilling = null
 let mySQLFrida = null
+
+// MySQL 操作封装
+// ============================================================================
+
+function apiMySQLOpen(dbName, dbIp, dbPort, dbAccount, dbPassword) {
+  const mysql = Memory.alloc(0x80000)
+  mySQLMySQL(mysql)
+  mySQLInit(mysql)
+  const dbIpPtr = Memory.allocUtf8String(dbIp)
+  const dbNamePtr = Memory.allocUtf8String(dbName)
+  const dbAccountPtr = Memory.allocUtf8String(dbAccount)
+  const dbPasswordPtr = Memory.allocUtf8String(dbPassword)
+  const ret = mySQLOpen(mysql, dbIpPtr, dbPort, dbNamePtr, dbAccountPtr, dbPasswordPtr)
+  if (ret) { return mysql }
+  return null
+}
+
+function apiMySQLExec(mysql, sql) {
+  const sqlPtr = Memory.allocUtf8String(sql)
+  mySQLSetQuery2(mysql, sqlPtr)
+  return mySQLExec(mysql, 1)
+}
+
+function apiMySQLGetInt(mysql, fieldIndex) {
+  const v = Memory.alloc(4)
+  if (1 == mySQLGetInt(mysql, fieldIndex, v)) return v.readInt()
+  return null
+}
+function apiMySQLGetUint(mysql, fieldIndex) {
+  const v = Memory.alloc(4)
+  if (1 == mySQLGetUint(mysql, fieldIndex, v)) return v.readUInt()
+  return null
+}
+function apiMySQLGetShort(mysql, fieldIndex) {
+  const v = Memory.alloc(4)
+  if (1 == mySQLGetShort(mysql, fieldIndex, v)) return v.readShort()
+  return null
+}
+function apiMySQLGetFloat(mysql, fieldIndex) {
+  const v = Memory.alloc(4)
+  if (1 == mySQLGetFloat(mysql, fieldIndex, v)) return v.readFloat()
+  return null
+}
+function apiMySQLGetStr(mysql, fieldIndex) {
+  const binaryLength = mySQLGetBinaryLength(mysql, fieldIndex)
+  if (binaryLength > 0) {
+    const v = Memory.alloc(binaryLength)
+    if (1 == mySQLGetBinary(mysql, fieldIndex, v, binaryLength)) return v.readUtf8String(binaryLength)
+  }
+  return null
+}
+function apiMySQLGetBinary(mysql, fieldIndex) {
+  const binaryLength = mySQLGetBinaryLength(mysql, fieldIndex)
+  if (binaryLength > 0) {
+    const v = Memory.alloc(binaryLength)
+    if (1 == mySQLGetBinary(mysql, fieldIndex, v, binaryLength)) return v.readByteArray(binaryLength)
+  }
+  return null
+}
+
+// 数据库生命周期
+function initDb() {
+  const config = globalConfig['db_config']
+  if (mySQLTaiwanCain == null) {
+    mySQLTaiwanCain = apiMySQLOpen('taiwan_cain', '127.0.0.1', 3306, config['account'], config['password'])
+  }
+  if (mySQLTaiwanCain2nd == null) {
+    mySQLTaiwanCain2nd = apiMySQLOpen('taiwan_cain_2nd', '127.0.0.1', 3306, config['account'], config['password'])
+  }
+  if (mySQLTaiwanBilling == null) {
+    mySQLTaiwanBilling = apiMySQLOpen('taiwan_billing', '127.0.0.1', 3306, config['account'], config['password'])
+  }
+  apiMySQLExec(mySQLTaiwanCain, 'create database if not exists frida default charset utf8;')
+  if (mySQLFrida == null) {
+    mySQLFrida = apiMySQLOpen('frida', '127.0.0.1', 3306, config['account'], config['password'])
+  }
+  apiMySQLExec(
+    mySQLFrida,
+    'CREATE TABLE game_event (\
+        event_id varchar(30) NOT NULL, event_info mediumtext NULL,\
+        PRIMARY KEY  (event_id)\
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8;'
+  )
+  eventVillageAttackLoadFromDb()
+}
+
+function uninitDb() {
+  eventVillageAttackSaveToDb()
+  if (mySQLTaiwanCain) { mySQLClose(mySQLTaiwanCain); mySQLTaiwanCain = null }
+  if (mySQLTaiwanCain2nd) { mySQLClose(mySQLTaiwanCain2nd); mySQLTaiwanCain2nd = null }
+  if (mySQLTaiwanBilling) { mySQLClose(mySQLTaiwanBilling); mySQLTaiwanBilling = null }
+  if (mySQLFrida) { mySQLClose(mySQLFrida); mySQLFrida = null }
+}
+
 // ============================================================================
 
 if (!globalThis.dnfPlugin) {
@@ -140,7 +234,9 @@ __dnfExport({
   cUserCharacInfoGetCharacJob, cUserCharacInfoGetCurCharacGrowType,
   cUserCharacInfoGetCharacGuildkey, cUserGetGuildName, guardMutexGuard,
   destroyGuardMutexGuard, gTimerQueue, timerDispatcherList,
-  inventoryTypeBody, inventoryTypeItem, inventoryTypeAvatar
+  inventoryTypeBody, inventoryTypeItem, inventoryTypeAvatar,
+  apiMySQLOpen, apiMySQLExec, apiMySQLGetInt, apiMySQLGetUint, apiMySQLGetShort,
+  apiMySQLGetFloat, apiMySQLGetStr, apiMySQLGetBinary, initDb, uninitDb
 })
 __dnfMutable('mySQLTaiwanCain', () => mySQLTaiwanCain, (v) => { mySQLTaiwanCain = v })
 __dnfMutable('mySQLTaiwanCain2nd', () => mySQLTaiwanCain2nd, (v) => { mySQLTaiwanCain2nd = v })
