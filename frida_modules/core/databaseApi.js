@@ -1,9 +1,8 @@
 // ============================================================================
 // DNF Frida modern modular package - databaseApi.js
-// MySQL bindings, DB initialization, query helpers, and timer dispatcher plumbing.
+// MySQL bindings, DB initialization, and query helpers.
 // ============================================================================
 
-// 08. MySQL 绑定与数据库基础操作区
 // ============================================================================
 
 //MYSQL操作

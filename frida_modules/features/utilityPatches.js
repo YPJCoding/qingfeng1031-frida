@@ -1,6 +1,6 @@
 // ============================================================================
 // DNF Frida modern modular package - utilityPatches.js
-// Misc patches: epic no-confirm, create char limit, and command utilities.
+// Misc patches: epic no-confirm, create char limit.
 // ============================================================================
 
 function cancelEpicOk() {
