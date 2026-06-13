@@ -23,6 +23,9 @@ function hookUserInOutGameWorld() {
           notifyVillageAttackScore(user)
           eventVillageAttackBroadcastDiffcult()
         }
+        if (pluginFeatureSwitch.dungeonPatch) {
+          apiScheduleOnMainThread(function () { unlockAllDungeonDifficulty(user) }, null)
+        }
         if (pluginFeatureSwitch.loginGreeting) {
           apiCUserSendNotiPacketMessage(user, 'Hello : ' + apiCUserCharacInfoGetCurCharacName(user), 2)
         }
