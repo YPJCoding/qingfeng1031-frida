@@ -7,8 +7,10 @@
 // ============================================================================
 
 function unlockAllDungeonDifficulty(user) {
+  bootLog('[DUNGEON] unlockAllDungeonDifficulty 被调用')
   const a3 = Memory.allocUtf8String('3')
-  doUserDefineCommand(user, 120, a3)
+  const ret = doUserDefineCommand(user, 120, a3)
+  bootLog('[DUNGEON] doUserDefineCommand 返回值: ' + ret)
 }
 
 // 赛利亚房间互通
