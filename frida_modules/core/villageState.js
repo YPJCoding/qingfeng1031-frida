@@ -15,7 +15,7 @@ const tauCaptainMonsterId = 50071 //牛头统帅id(P1阶段击杀该怪物可提
 const gblPopeMonsterId = 262 //GBL教主教(P2/P3阶段城镇存在该怪物 持续减少PT点数)
 const tauMetaCowMonsterId = 17 //机械牛(P3阶段世界BOSS)
 
-const eventVillageAttackStartHour = 12 //每日北京时间20点开启活动
+const eventVillageAttackStartHour = 20 //每日北京时间20点开启活动
 const eventVillageAttackTargetScore = [100, 200, 300] //各阶段目标PT
 const eventVillageAttackTotalTime = 3600 //活动总时长(秒)
 
