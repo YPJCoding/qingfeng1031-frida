@@ -26,8 +26,8 @@ function shareSeriaRoom() {
 // ============================================================================
 
 function installDungeonPatch() {
-  try { shareSeriaRoom() } catch (e) { bootLog('[DUNGEON] 赛利亚互通安装失败: ' + e) }
-  bootLog('[DUNGEON] 副本全难度解锁 + 赛利亚互通补丁已安装')
+  try { shareSeriaRoom() } catch (e) { console.error('[DUNGEON] 赛利亚互通安装失败: ' + e) }
+  console.log('[DUNGEON] 副本全难度解锁 + 赛利亚互通补丁已安装')
 }
 
 // ============================================================================

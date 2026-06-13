@@ -125,7 +125,7 @@ function installAvatarEmblemFix() {
           //log('镶嵌请求已处理完成!')
         }
       } catch (error) {
-        bootLog('installAvatarEmblemFix: ' + error, LOG_LEVELS.ERROR)
+        console.error('installAvatarEmblemFix: ' + error)
       }
     },
     onLeave: function (retval) {

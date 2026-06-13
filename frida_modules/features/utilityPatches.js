@@ -21,9 +21,9 @@ function disableCreateCharacterLimit() {
 }
 
 function installUtilityPatches() {
-  try { cancelEpicOk() } catch (e) { bootLog('[UTIL] 史诗免确认安装失败: ' + e) }
-  try { disableCreateCharacterLimit() } catch (e) { bootLog('[UTIL] 创建角色限制解除失败: ' + e) }
-  bootLog('[UTIL] 辅助补丁已安装')
+  try { cancelEpicOk() } catch (e) { console.error('[UTIL] 史诗免确认安装失败: ' + e) }
+  try { disableCreateCharacterLimit() } catch (e) { console.error('[UTIL] 创建角色限制解除失败: ' + e) }
+  console.log('[UTIL] 辅助补丁已安装')
 }
 
 if (!globalThis.dnfPlugin) { globalThis.dnfPlugin = {} }

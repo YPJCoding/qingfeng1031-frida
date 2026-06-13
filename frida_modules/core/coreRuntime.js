@@ -8,7 +8,7 @@ function pluginSafeCall(name, callback) {
   try {
     return callback()
   } catch (error) {
-    bootLog(name + ': ' + error, LOG_LEVELS.ERROR)
+    console.error(name + ': ' + error)
     return null
   }
 }

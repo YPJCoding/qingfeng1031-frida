@@ -41,14 +41,14 @@ let heffPartyTag = 0
 function startHellParty() {
   Interceptor.attach(ptr(0x085a0954), {
     onEnter(args) {
-      bootLog('[HELL] hook触发, heffPartyTag=' + heffPartyTag)
+      console.log('[HELL] hook触发, heffPartyTag=' + heffPartyTag)
       if (heffPartyTag) {
         args[3] = ptr(1)
-        bootLog('[HELL] 深渊模式已注入')
+        console.log('[HELL] 深渊模式已注入')
       }
     }
   })
-  bootLog('[HELL] startHellParty hook installed at 0x085a0954')
+  console.log('[HELL] startHellParty hook installed at 0x085a0954')
 }
 
 // 命令处理器
@@ -212,10 +212,10 @@ function cmdQuestFinish(user) {
       try {
         clearDoingQuestEx(user, questId)
         success++
-        bootLog('[QUEST-FINISH] quest=' + questId + ' OK')
+        console.log('[QUEST-FINISH] quest=' + questId + ' OK')
       } catch (e) {
         fail++
-        bootLog('[QUEST-FINISH] quest=' + questId + ' FAIL: ' + e)
+        console.error('[QUEST-FINISH] quest=' + questId + ' FAIL: ' + e)
       }
     }
   }
@@ -236,10 +236,10 @@ function cmdQuestClear(user) {
       try {
         apiForceClearQuest(user, questId)
         success++
-        bootLog('[QUEST-CLEAR] quest=' + questId + ' OK')
+        console.log('[QUEST-CLEAR] quest=' + questId + ' OK')
       } catch (e) {
         fail++
-        bootLog('[QUEST-CLEAR] quest=' + questId + ' FAIL: ' + e)
+        console.error('[QUEST-CLEAR] quest=' + questId + ' FAIL: ' + e)
       }
     }
   }
@@ -326,13 +326,13 @@ function cmdInherit(user) {
     var sub_type = cEquipItemGetSubType(itemData)
     var equRarity = cItemGetRarity(itemData)
     var needLevel = cItemGetUsableLevel(itemData)
-    bootLog('equ_type :' + equ_type)
-    bootLog('sub_type :' + sub_type)
+    console.log('equ_type :' + equ_type)
+    console.log('sub_type :' + sub_type)
     var useJob = ''
     for (var i = 60; i <= 70; i++) {
       useJob += itemData.add(i).readU8()
     }
-    bootLog(equ_type + '  ' + useJob)
+    console.log(equ_type + '  ' + useJob)
     if (equRarity < 3) {
       apiCUserSendNotiPacketMessage(user, '继承失败：装备品级必须要求粉色以上，继承装备不满足要求', 0)
       return
@@ -350,7 +350,7 @@ function cmdInherit(user) {
         var inEqu_type = inItemData.add(141 * 4).readU32()
         var inEquRarity = cItemGetRarity(inItemData)
         var inNeedLevel = cItemGetUsableLevel(inItemData)
-        bootLog('equ_type a：' + equ_type + ',' + inEqu_type + ',' + inItemData.add(148).readU8())
+        console.log('equ_type a：' + equ_type + ',' + inEqu_type + ',' + inItemData.add(148).readU8())
         if (inEqu_type == equ_type) {
           if (inEqu_type == 10) {
             var useJob = ''
@@ -393,7 +393,7 @@ function cmdInherit(user) {
             cUserSendUpdateItemList(user, 1, 3, i)
             cUserSendUpdateItemList(user, 1, 0, 9)
             successTag = true
-            bootLog('success！！！')
+            console.log('success！！！')
             apiCUserSendNotiPacketMessage(user, '继承成功！！！', 0)
           }
           break
@@ -444,9 +444,9 @@ function cmdClearCreature(user) {
 
 function cmdCrossover(user) {
   var accountCargo = cUserGetAccountCargo(user)
-  bootLog('账号金库：' + accountCargo)
+  console.log('账号金库：' + accountCargo)
   var emptyIndex = cAccountCargoGetEmptySlot(accountCargo)
-  bootLog('空格子的位置:' + emptyIndex)
+  console.log('空格子的位置:' + emptyIndex)
   if (emptyIndex == -1) {
     apiCUserSendNotiPacketMessage(user, '跨界失败：账号金库没有空的格子！！！', 0)
   }
@@ -456,13 +456,13 @@ function cmdCrossover(user) {
   if (itemId) {
     var tag = cAccountCargoInsertItem(accountCargo, equ, emptyIndex)
     if (tag == -1) {
-      bootLog('fail!!!')
+      console.error('fail!!!')
       apiCUserSendNotiPacketMessage(user, '跨界失败：移入装备error', 0)
     } else {
       invenItemReset(equ)
       cUserSendUpdateItemList(user, 1, 0, 9)
       cAccountCargoSendItemList(accountCargo)
-      bootLog('success!!!')
+      console.log('success!!!')
       apiCUserSendNotiPacketMessage(user, '跨界成功：已存入第 ' + (emptyIndex + 1) + ' 个格子！', 0)
     }
   }
@@ -543,7 +543,7 @@ function routeGmCommand(user, rawMsg) {
     handler(user, args)
   } catch (e) {
     apiCUserSendNotiPacketMessage(user, '命令执行失败: ' + cmdName, 2)
-    bootLog('[GM-ERROR] cmd=' + cmdName + ' error=' + e)
+    console.error('[GM-ERROR] cmd=' + cmdName + ' error=' + e)
   }
 }
 
@@ -560,12 +560,12 @@ function installGmCommands() {
       const msgLen = rawPacketBuf.readInt()
       let msg = rawPacketBuf.add(4).readUtf8String(msgLen)
       msg = msg.slice(2)
-      bootLog('[GM-COMMAND] user=' + apiCUserCharacInfoGetCurCharacName(user) + ' msg=' + msg)
+      console.log('[GM-COMMAND] user=' + apiCUserCharacInfoGetCurCharacName(user) + ' msg=' + msg)
       routeGmCommand(user, msg)
     }
   })
 
-  bootLog('[GM] 自定义GM命令模块已安装')
+  console.log('[GM] 自定义GM命令模块已安装')
 }
 
 // ============================================================================

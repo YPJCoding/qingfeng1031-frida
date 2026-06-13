@@ -133,7 +133,7 @@ function eventVillageAttackTimer() {
 
 //开启怪物攻城活动
 function startVillageAttack() {
-  bootLog('[INFO] start_villageattack-------------')
+  console.log('start_villageattack-------------')
   const a3 = Memory.alloc(100)
   a3.add(10).writeInt(eventVillageAttackTotalTime) //活动剩余时间
   a3.add(14).writeInt(villageAttackEventInfo.score) //当前频道PT点数
@@ -161,7 +161,7 @@ function startEventVillageAttackTimer() {
   let delayTime = 3600 * eventVillageAttackStartHour - (curTime % (3600 * 24))
   if (delayTime <= 0) delayTime += 3600 * 24
   //delay_time = 10
-  bootLog('[INFO] -------------------- <countdown time>:' + delayTime)
+  console.log('-------------------- <countdown time>:' + delayTime)
   //log('距离下次开启<怪物攻城活动>还有:' + delay_time / 3600 + '小时')
   //log('距离下次开启<怪物攻城活动>还有:' + delay_time * 1000)
   //定时开启活动
@@ -172,7 +172,7 @@ function startEventVillageAttackTimer() {
 function startEventVillageAttack() {
   //patch相关函数, 修复活动流程
   hookVillageAttack()
-  bootLog('[INFO] -------------------- start_event_villageattack-----------------')
+  console.log('-------------------- start_event_villageattack-----------------')
   if (villageAttackEventInfo.state == villageAttackStateEnd) {
     //开启怪物攻城活动定时器
     startEventVillageAttackTimer()

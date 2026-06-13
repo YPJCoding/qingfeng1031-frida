@@ -40,7 +40,7 @@ function loadConfig(path) {
   pluginSafeCall('load_config', function () {
     const data = apiReadFile(path, 'r', 10 * 1024 * 1024)
     if (!data) {
-      bootLog(`[WARN] 配置文件不存在或读取失败: ${path}`)
+      console.warn(`配置文件不存在或读取失败: ${path}`)
       globalConfig = {}
       return
     }
