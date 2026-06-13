@@ -78,11 +78,11 @@ let pluginStarted = false
 // 加载主功能。
 function start() {
   if (globalThis.dnfPlugin?._started) {
-    bootLog('[WARN] start() 已执行过，本次跳过，避免重复安装 Hook。')
+    bootLog('start() 已执行过，本次跳过，避免重复安装 Hook。', LOG_LEVELS.WARN)
     return
   }
   if (pluginStarted && !pluginRuntimeConfig.allowRepeatStart) {
-    bootLog('[WARN] start() 已执行过，本次跳过，避免重复安装 Hook。')
+    bootLog('start() 已执行过，本次跳过，避免重复安装 Hook。', LOG_LEVELS.WARN)
     return
   }
   pluginStarted = true
@@ -113,7 +113,7 @@ function start() {
 // early 阶段加载时，等待 check_argv 执行结束，再安装业务 Hook 和基础服务。
 function awake() {
   if (globalThis.dnfPlugin?.entryEarlyHookInstalled) {
-    bootLog('[WARN] awake skipped: entry early hook already installed')
+    bootLog('awake skipped: entry early hook already installed', LOG_LEVELS.WARN)
     return
   }
   Interceptor.attach(pluginAddress.checkArgv, {
@@ -141,17 +141,17 @@ function init(stage, parameters) {
   } catch (error) {
     lifecycleState.failed = true
     lifecycleState.initializing = false
-    bootLog('[ERROR] frida init failed: ' + error)
+    bootLog('frida init failed: ' + error, LOG_LEVELS.ERROR)
   }
 }
 function dispose() {
   bootLog('[INFO] -------------------- frida dispose called -----------------')
   if (lifecycleState.disposing) {
-    bootLog('[WARN] dispose skipped: already disposing')
+    bootLog('dispose skipped: already disposing', LOG_LEVELS.WARN)
     return 'dispose_skip_already_disposing'
   }
   if (!lifecycleState.initialized && !lifecycleState.failed) {
-    bootLog('[WARN] dispose skipped: not initialized (early DP2 dispose, safe to ignore)')
+    bootLog('dispose skipped: not initialized (early DP2 dispose, safe to ignore)', LOG_LEVELS.WARN)
     lifecycleState.disposed = true
     return 'dispose_skip_not_initialized'
   }

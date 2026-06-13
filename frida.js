@@ -56,8 +56,11 @@ function bootNowText() {
   }
 }
 
-function bootLog(message) {
-  const line = `[${bootNowText()}] ${message}`
+const LOG_LEVELS = { INFO: 'INFO', WARN: 'WARN', ERROR: 'ERROR' }
+
+function bootLog(message, level) {
+  const lv = level || LOG_LEVELS.INFO
+  const line = `[${bootNowText()}] [${lv}] ${message}`
   try {
     if (!bootLogFile) {
       bootLogFile = new File(bootLogPath, 'a+')
@@ -67,6 +70,7 @@ function bootLog(message) {
   } catch (e) {}
 }
 globalThis.bootLog = bootLog
+globalThis.LOG_LEVELS = LOG_LEVELS
 
 function closeBootLog() {
   if (bootLogFile) {
