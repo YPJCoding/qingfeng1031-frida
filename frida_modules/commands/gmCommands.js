@@ -30,7 +30,9 @@ const COMMANDS = [
   { cmd: '//clearavatar/ca', desc: '清空时装栏' },
   { cmd: '//clearcreature/cc', desc: '清空宠物栏' },
   { cmd: '//crossover/cs', desc: '跨界石(背包第1格→账号金库)' },
-  { cmd: '//job {job} {growtype} {level}', desc: '转职(job=职业ID growtype=成长类型 level=等级)' }
+  { cmd: '//job {job} {growtype} {level}', desc: '转职(job=职业ID growtype=成长类型 level=等级)' },
+  { cmd: '//va_start/vas', desc: '立即开启怪物攻城活动' },
+  { cmd: '//va_end/vae', desc: '立即结束怪物攻城活动' }
 ]
 
 // 深渊模式
@@ -483,6 +485,24 @@ function cmdJob(user, args) {
   apiCUserSendNotiPacketMessage(user, '转职完成，请重新选择角色', 1)
 }
 
+function cmdVaStart(user) {
+  if (villageAttackEventInfo.state != villageAttackStateEnd) {
+    apiCUserSendNotiPacketMessage(user, '怪物攻城活动已在运行中', 2)
+    return
+  }
+  onStartEventVillageAttack()
+  apiCUserSendNotiPacketMessage(user, '怪物攻城活动已开启', 1)
+}
+
+function cmdVaEnd(user) {
+  if (villageAttackEventInfo.state == villageAttackStateEnd) {
+    apiCUserSendNotiPacketMessage(user, '怪物攻城活动未在运行', 2)
+    return
+  }
+  onEndEventVillageAttack()
+  apiCUserSendNotiPacketMessage(user, '怪物攻城活动已结束', 1)
+}
+
 // 命令路由
 // ============================================================================
 
@@ -527,7 +547,9 @@ const CMD_MAP = {
   'clearcreature': cmdClearCreature,
   'cc': cmdClearCreature,
   'crossover': cmdCrossover, 'cs': cmdCrossover,
-  'job': cmdJob
+  'job': cmdJob,
+  'va_start': cmdVaStart, 'vas': cmdVaStart,
+  'va_end': cmdVaEnd, 'vae': cmdVaEnd
 }
 
 function routeGmCommand(user, rawMsg) {
