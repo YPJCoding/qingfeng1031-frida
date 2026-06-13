@@ -33,31 +33,6 @@ const COMMANDS = [
   { cmd: '//job {job} {growtype} {level}', desc: '转职(job=职业ID growtype=成长类型 level=等级)' }
 ]
 
-// 道具名称列表
-// ============================================================================
-
-let g_itemNameList = null
-
-function ensureItemNameListLoaded() {
-  if (g_itemNameList) return
-  try {
-    const f = new File('/data/frida/data/item_name_list.txt', 'r')
-    g_itemNameList = []
-    let count = 0
-    while (count < 50000) {
-      const line = f.readLine()
-      if (!line) break
-      const p = line.indexOf('----')
-      if (p < 0) continue
-      g_itemNameList.push({ id: line.slice(0, p), name: line.slice(p + 4) })
-      count++
-    }
-    f.close()
-  } catch (e) {
-    g_itemNameList = []
-  }
-}
-
 // 深渊模式
 // ============================================================================
 
@@ -142,21 +117,9 @@ function cmdFindItem(user, args) {
     apiCUserSendNotiPacketMessage(user, '格式: //fi 物品名称', 2)
     return
   }
-  ensureItemNameListLoaded()
-  if (!g_itemNameList || g_itemNameList.length === 0) {
-    apiCUserSendNotiPacketMessage(user, '道具查找功能不可用', 2)
-    return
-  }
-  const keyword = args.join(' ').toLowerCase()
-  const matches = []
-  for (let i = 0; i < g_itemNameList.length; i++) {
-    if (g_itemNameList[i].name.toLowerCase().includes(keyword)) {
-      matches.push(g_itemNameList[i])
-      if (matches.length >= 20) break
-    }
-  }
+  const matches = searchItemsByName(args.join(' '))
   if (matches.length === 0) {
-    apiCUserSendNotiPacketMessage(user, '未找到匹配物品: ' + keyword, 2)
+    apiCUserSendNotiPacketMessage(user, '未找到匹配物品: ' + args.join(' '), 2)
     return
   }
   for (let i = 0; i < matches.length; i++) {
@@ -172,21 +135,11 @@ function cmdItemName(user, args) {
     apiCUserSendNotiPacketMessage(user, '格式: //in 物品名称 [数量]', 2)
     return
   }
-  ensureItemNameListLoaded()
-  if (!g_itemNameList || g_itemNameList.length === 0) {
-    apiCUserSendNotiPacketMessage(user, '道具查找功能不可用', 2)
-    return
-  }
   const countArg = args.length >= 2 ? parseInt(args[args.length - 1], 10) : 1
   const hasCount = args.length >= 2 && !isNaN(countArg) && countArg > 0
   const searchEnd = hasCount ? args.length - 1 : args.length
-  const name = args.slice(0, searchEnd).join(' ').toLowerCase()
-  const matches = []
-  for (let i = 0; i < g_itemNameList.length; i++) {
-    if (g_itemNameList[i].name.toLowerCase() === name) {
-      matches.push(g_itemNameList[i])
-    }
-  }
+  const name = args.slice(0, searchEnd).join(' ')
+  const matches = searchItemsByFullName(name)
   if (matches.length === 0) {
     apiCUserSendNotiPacketMessage(user, '未找到匹配物品: ' + name, 2)
     return
@@ -194,9 +147,9 @@ function cmdItemName(user, args) {
   if (matches.length > 1) {
     for (let i = 0; i < Math.min(matches.length, 10); i++) {
       apiCUserSendNotiPacketMessage(user, 'ID=' + matches[i].id + ' ' + matches[i].name, 1)
-      }
-      if (matches.length > 10) {
-        apiCUserSendNotiPacketMessage(user, '匹配过多，只显示前10条，请使用精确名称', 1)
+    }
+    if (matches.length > 10) {
+      apiCUserSendNotiPacketMessage(user, '匹配过多，只显示前10条，请使用精确名称', 1)
     }
     return
   }
