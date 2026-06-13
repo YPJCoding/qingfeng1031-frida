@@ -72,6 +72,14 @@ function bootLog(message, level) {
 globalThis.bootLog = bootLog
 globalThis.LOG_LEVELS = LOG_LEVELS
 
+// ⚠️ 重写 console.* → 统一走 bootLog 写入文件。
+// bootLog 内部禁止调用 console 方法，否则死循环。
+// 此处位于 frida.js 顶层，先于所有模块加载，不会遗漏日志。
+console.log = function (...args) { bootLog(args.join(' '), LOG_LEVELS.INFO) }
+console.info = function (...args) { bootLog(args.join(' '), LOG_LEVELS.INFO) }
+console.warn = function (...args) { bootLog(args.join(' '), LOG_LEVELS.WARN) }
+console.error = function (...args) { bootLog(args.join(' '), LOG_LEVELS.ERROR) }
+
 function closeBootLog() {
   if (bootLogFile) {
     try { bootLogFile.flush(); bootLogFile.close() } catch (e) {}
