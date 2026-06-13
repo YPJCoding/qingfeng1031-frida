@@ -28,7 +28,7 @@
 - 被指出幻觉/违反规则时，立即重读本文件
 
 ## 代码约定
-- 模块化架构，`frida_modules/` 下每个 `.js` 独立加载
+- 模块化架构，`frida_modules/core|api|features|commands/` 四个子目录
 - 命名：驼峰
 - 消息类型：成功 `1`，错误 `2`
 - 日志：`bootLog()`，禁止 `console.log`
