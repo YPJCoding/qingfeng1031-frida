@@ -6,6 +6,8 @@ TARGET="/data/data/frida"
 
 echo "=== 同步源码到 ${HOST}:${TARGET} ==="
 
+ssh "${HOST}" "mkdir -p ${TARGET}/frida_modules/core ${TARGET}/frida_modules/api ${TARGET}/frida_modules/features ${TARGET}/frida_modules/commands ${TARGET}/data"
+
 scp frida.js frida_config.json frida.config "${HOST}:${TARGET}/"
 scp frida_modules/main.js frida_modules/legacyAliases.js "${HOST}:${TARGET}/frida_modules/"
 scp frida_modules/core/*.js "${HOST}:${TARGET}/frida_modules/core/"
