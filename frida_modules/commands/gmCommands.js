@@ -1,6 +1,6 @@
 // ============================================================================
 // DNF Frida modern modular package - gmCommands.js
-// Custom GM commands: 21 commands covering move/coin/cash/item/quest/repair/decompose/inherit/crossover/job/dimreset/mail/avatar/creature/hell/level/help.
+// 自定义 GM 命令模块：21 条命令覆盖移动/金币/点券/道具/任务/修理/分解/继承/跨界/转职/异界/邮件/时装/宠物/深渊/等级/帮助。
 // ============================================================================
 
 // GM命令定义区

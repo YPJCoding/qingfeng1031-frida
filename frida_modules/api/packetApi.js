@@ -1,6 +1,6 @@
 // ============================================================================
 // DNF Frida modern modular package - packetApi.js
-// Packet buffer read/write and notification message helpers.
+// 封包缓冲区读写及通知消息辅助。
 // ============================================================================
 
 //服务器组包

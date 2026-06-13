@@ -1,6 +1,6 @@
 // ============================================================================
 // DNF Frida modern modular package - nativeBindings.js
-// NativeFunction bindings for game server symbols and packet primitives.
+// 游戏服务端符号及封包操作的 NativeFunction 绑定。
 // ============================================================================
 
 // ============================================================================

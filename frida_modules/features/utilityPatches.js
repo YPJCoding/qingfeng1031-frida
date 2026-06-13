@@ -1,6 +1,6 @@
 // ============================================================================
 // DNF Frida modern modular package - utilityPatches.js
-// Misc patches: epic no-confirm, create char limit.
+// 杂项补丁：史诗免确认、解除创建角色限制。
 // ============================================================================
 
 function cancelEpicOk() {

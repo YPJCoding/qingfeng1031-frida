@@ -1,6 +1,6 @@
 // ============================================================================
 // DNF Frida modern modular package - coreRuntime.js
-// Core runtime utilities: safe calls, native export lookup, timestamps, files, and binary helpers.
+// 核心运行时工具：安全调用、系统导出查询、时间戳、文件及二进制辅助。
 // ============================================================================
 
 // Hook 回调、模块安装、数据库操作都建议通过该函数保护，避免单个功能异常影响整体脚本。

@@ -1,6 +1,6 @@
 // ============================================================================
 // DNF Frida modern modular package - dungeonPatch.js
-// Dungeon quality-of-life patches: unlock all difficulties, share Seria room.
+// 副本便捷补丁：解锁全难度、赛利亚房间互通。
 // ============================================================================
 
 // 副本解锁全部难度

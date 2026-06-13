@@ -1,6 +1,6 @@
 // ============================================================================
 // DNF Frida modern modular package - itemSearch.js
-// Item name list loading and fuzzy/exact search for GM commands.
+// 道具名称列表加载及模糊/精确搜索，供 GM 命令使用。
 // ============================================================================
 
 // 道具名称列表

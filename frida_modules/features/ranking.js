@@ -1,6 +1,6 @@
 // ============================================================================
 // DNF Frida modern modular package - ranking.js
-// Static combat-power ranking display (top 3 fake data on client street).
+// 静态战力排行榜展示（客户端站街显示前三名）。
 // ============================================================================
 
 const ranklist = {

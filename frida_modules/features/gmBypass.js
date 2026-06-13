@@ -1,6 +1,6 @@
 // ============================================================================
 // DNF Frida modern modular package - gmBypass.js
-// GM permission bypass via isGM/isGMUser hooks.
+// 通过 Hook isGM/isGMUser 绕过 GM 权限检查。
 // ============================================================================
 
 // GM 权限绕过区
