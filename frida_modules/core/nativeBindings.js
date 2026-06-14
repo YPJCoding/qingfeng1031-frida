@@ -101,6 +101,10 @@ const invenItemGetKey = new NativeFunction(ptr(0x850d14e), 'int', ['pointer'], {
 const invenItemGetAddInfo = new NativeFunction(ptr(0x80f783a), 'int', ['pointer'], {
   abi: 'sysv'
 })
+//设置道具附加信息（装备=品级，其他道具=数量）
+const invenItemSetAddInfo = new NativeFunction(ptr(0x80CB884), 'int', ['pointer', 'int'], {
+  abi: 'sysv'
+})
 //获取时装插槽数据
 const wongWorkCAvatarItemMgrGetJewelSocketData = new NativeFunction(ptr(0x82f98f8), 'pointer', ['pointer', 'int'], {
   abi: 'sysv'
@@ -391,7 +395,7 @@ __dnfExport({
   cUserCharacInfoGetCharacLevel, cUserCharacInfoGetCurCharacName, cUserCharacInfoGetLevelUpExp,
   cUserCharacInfoGetCurCharacInvenW, cDungeonGetIndex, cInventoryGetInvenRef, invenItemIsEquipableItemType,
   cItemGetRarity, cItemGetUsableLevel, cItemGetItemGroupName, invenItemIsEmpty, invenItemGetKey,
-  invenItemGetAddInfo, wongWorkCAvatarItemMgrGetJewelSocketData, gGameWorld, gCDataManager,
+  invenItemGetAddInfo, invenItemSetAddInfo, wongWorkCAvatarItemMgrGetJewelSocketData, gGameWorld, gCDataManager,
   cInventoryGetAvatarItemMgrR, cDataManagerFindItem, cDataManagerFindQuest, cStackableItemGetItemType,
   cStackableItemGetJewelTargetSocket, invenItemInvenItem, cUserGetCera, cUserGetCurCharacQuestW,
   cSystemTimeGetCurSec, globalDataSSystemTime, cUserCharacInfoGetLoginTick, cUserCheckItemLock,

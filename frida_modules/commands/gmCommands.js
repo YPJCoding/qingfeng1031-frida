@@ -32,7 +32,8 @@ const COMMANDS = [
   { cmd: '//crossover/cs', desc: '跨界石(背包第1格→账号金库)' },
   { cmd: '//job {job} {growtype} {level}', desc: '转职(job=职业ID growtype=成长类型 level=等级)' },
   { cmd: '//va_start/vas', desc: '立即开启怪物攻城活动' },
-  { cmd: '//va_end/vae', desc: '立即结束怪物攻城活动' }
+  { cmd: '//va_end/vae', desc: '立即结束怪物攻城活动' },
+  { cmd: '//maxgrade/mg', desc: '全身装备品级调整为最上级' }
 ]
 
 // 深渊模式
@@ -503,6 +504,40 @@ function cmdVaEnd(user) {
   apiCUserSendNotiPacketMessage(user, '怪物攻城活动已结束', 1)
 }
 
+// 全身装备品级一键最上级
+// ============================================================================
+
+const EQUIP_GRADE_MAX = 952000828
+
+function cmdGradeMax(user) {
+  const inven = cUserCharacInfoGetCurCharacInvenW(user)
+  if (inven.isNull()) {
+    apiCUserSendNotiPacketMessage(user, '失败：无法获取背包', 2)
+    return
+  }
+
+  const characName = apiCUserCharacInfoGetCurCharacName(user)
+  console.log('[GRADE-MAX] ' + characName + ' 开始调整全身装备品级 → ' + EQUIP_GRADE_MAX)
+
+  let count = 0
+  for (let slot = 10; slot <= 21; slot++) {
+    const item = cInventoryGetInvenRef(inven, 0, slot)
+    if (item.isNull() || invenItemIsEmpty(item)) continue
+    if (!invenItemIsEquipableItemType(item)) continue
+
+    const before = invenItemGetAddInfo(item)
+    if (slot === 21 && before === 0) continue
+
+    invenItemSetAddInfo(item, EQUIP_GRADE_MAX)
+    cUserSendUpdateItemList(user, 1, 3, slot)
+    console.log('[GRADE-MAX]   slot ' + slot + ': ' + before + ' → ' + EQUIP_GRADE_MAX)
+    count++
+  }
+
+  console.log('[GRADE-MAX] ' + characName + ' 完成: ' + count + ' 件装备品级已调整为最上级')
+  apiCUserSendNotiPacketMessage(user, count + ' 件装备品级已调整为最上级', 1)
+}
+
 // 命令路由
 // ============================================================================
 
@@ -549,7 +584,9 @@ const CMD_MAP = {
   'crossover': cmdCrossover, 'cs': cmdCrossover,
   'job': cmdJob,
   'va_start': cmdVaStart, 'vas': cmdVaStart,
-  'va_end': cmdVaEnd, 'vae': cmdVaEnd
+  'va_end': cmdVaEnd, 'vae': cmdVaEnd,
+  'maxgrade': cmdGradeMax,
+  'mg': cmdGradeMax
 }
 
 function routeGmCommand(user, rawMsg) {
